@@ -195,5 +195,10 @@ namespace AdaCredit.Infra.Repositories
 
       return Save();
     }
+
+    public static List<Employee> GetActive()
+    {
+      return RegisteredEmployees.FindAll(e => e.IsActive);
+    }
   }
 }

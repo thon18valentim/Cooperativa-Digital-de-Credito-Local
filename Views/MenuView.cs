@@ -24,8 +24,8 @@ namespace AdaCredit.Views
 
       var subEmployee = new ConsoleMenu(Array.Empty<string>(), level: 1)
        .Add("Cadastrar Novo Funcionário", () => RegisterEmployeesView.Show())
-       .Add("Alterar Senha de um Funcionário existente", () => ListingView.ShowChangePassword())
-       .Add("Desativar Cadastro de um Funcionário existente", () => ListingView.ShowDisableEmployee())
+       .Add("Alterar Senha de um Funcionário existente", () => SelectionView.ShowChangePassword())
+       .Add("Desativar Cadastro de um Funcionário existente", () => SelectionView.ShowDisableEmployee())
        .Add("Voltar", ConsoleMenu.Close)
        .Configure(config =>
        {
@@ -51,7 +51,7 @@ namespace AdaCredit.Views
       var subReports = new ConsoleMenu(Array.Empty<string>(), level: 1)
        .Add("Exibir Todos os Clientes Ativos com seus Respectivos Saldos", () => Console.WriteLine("Sub_One"))
        .Add("Exibir Todos os Clientes Inativos", () => Console.WriteLine("Sub_Two"))
-       .Add("Exibir Todos os Funcionários Ativos e sua Última Data e Hora de Login", () => Console.WriteLine("Sub_Three"))
+       .Add("Exibir Todos os Funcionários Ativos e sua Última Data e Hora de Login", () => ReportView.ShowActiveEmployees())
        .Add("Exibir Transações com Erro (Detalhes da transação e do Erro)", () => Console.WriteLine("Sub_Three"))
        .Add("Voltar", ConsoleMenu.Close)
        .Configure(config =>

@@ -9,7 +9,7 @@ using AdaCredit.Utils;
 
 namespace AdaCredit.Views
 {
-  public static class ListingView
+  public static class SelectionView
   {
     public static void ShowChangePassword()
     {
