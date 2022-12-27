@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AdaCredit.Infra.Repositories;
+using AdaCredit.Utils;
 
 namespace AdaCredit.Views
 {
-  public static class Login
+  public static class LoginView
   {
     public static void Show()
     {
@@ -21,26 +22,32 @@ namespace AdaCredit.Views
         var userName = Console.ReadLine();
 
         Console.WriteLine("Senha: ");
-        var password = Console.ReadLine();
+        var password = Util.ReadLinePassword();
 
         if (EmployeeRepository.IsEmpty())
         {
           if (userName.Equals("user", StringComparison.InvariantCultureIgnoreCase) &&
           password.Equals("pass", StringComparison.InvariantCultureIgnoreCase))
           {
-            RegisterEmployees.Show();
+            RegisterEmployeesView.Show();
             isLogged = true;
           }
         }
         else
         {
-          isLogged = EmployeeRepository.Find(userName, password);
+          isLogged = EmployeeRepository.Login(userName, password);
         }
         
+        if (!isLogged)
+        {
+          Console.WriteLine("Usuário ou senha incorreta!");
+          Thread.Sleep(2000);
+        }
 
       } while (!isLogged);
 
-      Console.Clear();
+      Console.WriteLine("Login efetuado com sucesso!");
+      Thread.Sleep(2000);
     }
   }
 }

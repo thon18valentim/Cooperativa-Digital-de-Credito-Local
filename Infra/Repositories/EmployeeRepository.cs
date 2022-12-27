@@ -11,12 +11,19 @@ using CsvHelper;
 using AdaCredit.Domain.Entities.Enums;
 using BCrypt.Net;
 using static BCrypt.Net.BCrypt;
+using System.Collections;
 
 namespace AdaCredit.Infra.Repositories
 {
   public sealed class EmployeeRepository
   {
-    private static List<Employee> RegisteredEmployees { get; set; }
+    private static List<Employee> registeredEmployees;
+
+    public static List<Employee> RegisteredEmployees
+    {
+      get => registeredEmployees;
+      private set => registeredEmployees = value;
+    }
 
     static EmployeeRepository()
     {
@@ -106,6 +113,9 @@ namespace AdaCredit.Infra.Repositories
 
       } while (!IsUniqueName);
 
+      employee.IsActive = true;
+      employee.LastLogin = DateTime.Now.ToString("dd/MM/yyyy/HH:mm");
+
       // adicionar employee
       RegisteredEmployees.Add(employee);
 
@@ -118,9 +128,36 @@ namespace AdaCredit.Infra.Repositories
     public static bool IsEmpty()
       => RegisteredEmployees.Count == 0;
 
-    public static bool Find(string userName, string password)
+    public static Employee? Find(string userName)
     {
-      var employee = RegisteredEmployees.FirstOrDefault(e => e.UserName == userName);
+      return RegisteredEmployees.FirstOrDefault(e => e.UserName == userName);
+    }
+
+    public static bool Login(string userName, string password)
+    {
+      var employee = Find(userName);
+
+      if (employee == default)
+        return false;
+
+      if (!employee.IsActive)
+        return false;
+
+      var hashPassword = HashPassword(password, employee.PasswordSalt);
+
+      if (hashPassword == employee.PasswordHash)
+      {
+        employee.LastLogin = DateTime.Now.ToString("dd/MM/yyyy/HH:mm");
+        Save();
+        return true;
+      }
+
+      return false;
+    }
+
+    public static bool VerifyPassword(string userName, string password)
+    {
+      var employee = Find(userName);
 
       if (employee == default)
         return false;
@@ -131,6 +168,32 @@ namespace AdaCredit.Infra.Repositories
         return true;
 
       return false;
+    }
+
+    public static bool ChangePassword(string userName, string newPassword)
+    {
+      var employee = Find(userName);
+
+      if (employee == default)
+        return false;
+
+      employee.PasswordSalt = GenerateSalt();
+      var hashedPassword = HashPassword(newPassword, employee.PasswordSalt);
+      employee.PasswordHash = hashedPassword;
+
+      return Save();
+    }
+
+    public static bool Disable(string userName)
+    {
+      var employee = Find(userName);
+
+      if (employee == default)
+        return false;
+
+      employee.IsActive = false;
+
+      return Save();
     }
   }
 }

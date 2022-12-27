@@ -4,6 +4,7 @@ using AdaCredit.Domain.Entities;
 using AdaCredit.Domain.Entities.Maps;
 using System.Collections;
 using CsvHelper.Configuration;
+using Spectre.Console;
 
 namespace AdaCredit.Utils
 {
@@ -31,6 +32,52 @@ namespace AdaCredit.Utils
         Console.WriteLine($"{ex.Message} ao escrever arquivo {fileName}");
         return false;
       }
+    }
+
+    public static string ReadLinePassword()
+    {
+      var password = string.Empty;
+      ConsoleKeyInfo info = Console.ReadKey(true);
+
+      while(info.Key != ConsoleKey.Enter)
+      {
+        if (info.Key == ConsoleKey.Backspace)
+        {
+          if (!string.IsNullOrEmpty(password))
+          {
+            password = password.Substring(0, password.Length - 1);
+            
+            int pos = Console.CursorLeft;
+
+            Console.SetCursorPosition(pos - 1, Console.CursorTop);
+            Console.Write(" ");
+            Console.SetCursorPosition(pos - 1, Console.CursorTop);
+
+            info = Console.ReadKey(true);
+            continue;
+          }
+        }
+
+        Console.Write("*");
+        password += info.KeyChar;
+
+        info = Console.ReadKey(true);
+      }
+
+      Console.WriteLine();
+      return password;
+    }
+
+    public static SelectionPrompt<string> CreateSelectionList(string title, List<string> options)
+    {
+      var selectionPrompt = new SelectionPrompt<string>()
+              .Title(title)
+              .PageSize(10)
+              .AddChoices(options);
+
+      selectionPrompt.HighlightStyle = new Style(Color.White);
+
+      return selectionPrompt;
     }
   }
 }

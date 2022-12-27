@@ -3,7 +3,7 @@ using ConsoleTools;
 
 namespace AdaCredit.Views
 {
-  public static class Menu
+  public static class MenuView
   {
     public static void Show()
     {
@@ -23,9 +23,9 @@ namespace AdaCredit.Views
        });
 
       var subEmployee = new ConsoleMenu(Array.Empty<string>(), level: 1)
-       .Add("Cadastrar Novo Funcionário", () => Console.WriteLine("Sub_One"))
-       .Add("Alterar Senha de um Funcionário existente", () => Console.WriteLine("Sub_Two"))
-       .Add("Desativar Cadastro de um Funcionário existente", () => Console.WriteLine("Sub_Three"))
+       .Add("Cadastrar Novo Funcionário", () => RegisterEmployeesView.Show())
+       .Add("Alterar Senha de um Funcionário existente", () => ListingView.ShowChangePassword())
+       .Add("Desativar Cadastro de um Funcionário existente", () => ListingView.ShowDisableEmployee())
        .Add("Voltar", ConsoleMenu.Close)
        .Configure(config =>
        {

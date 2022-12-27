@@ -16,7 +16,7 @@ namespace AdaCredit.Domain.Entities
     public string UserName { get; set; }
     public string PasswordHash { get; set; }
     public string PasswordSalt { get; set; }
-    public DateTime LastLogin { get; set; }
+    public string LastLogin { get; set; }
     public bool IsActive { get; set; }
 
     public Employee(string firstName, string lastName, Gender gender, string userName, string passwordHash, string passwordSalt)
@@ -27,7 +27,7 @@ namespace AdaCredit.Domain.Entities
       UserName = userName;
       PasswordHash = passwordHash;
       PasswordSalt = passwordSalt;
-      LastLogin = DateTime.Now;
+      LastLogin = DateTime.Now.ToString("dd/MM/yyyy/HH:mm");
       IsActive = true;
     }
 
