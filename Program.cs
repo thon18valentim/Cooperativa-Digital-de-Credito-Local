@@ -10,6 +10,9 @@ namespace AdaCredit
   {
     static void Main()
     {
+      ClientRepository.Load();
+      AccountRepository.Load();
+
       LoginView.Show();
       MenuView.Show();
     }

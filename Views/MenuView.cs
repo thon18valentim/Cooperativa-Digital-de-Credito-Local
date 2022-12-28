@@ -8,7 +8,7 @@ namespace AdaCredit.Views
     public static void Show()
     {
       var subClient = new ConsoleMenu(Array.Empty<string>(), level: 1)
-       .Add("Cadastrar Novo Cliente", () => Console.WriteLine("Sub_One"))
+       .Add("Cadastrar Novo Cliente", () => RegisterClientView.Show())
        .Add("Consultar os Dados de um Cliente existente", () => Console.WriteLine("Sub_Two"))
        .Add("Alterar o Cadastro de um Cliente existente", () => Console.WriteLine("Sub_Three"))
        .Add("Desativar Cadastro de um Cliente existente", () => Console.WriteLine("Sub_Four"))

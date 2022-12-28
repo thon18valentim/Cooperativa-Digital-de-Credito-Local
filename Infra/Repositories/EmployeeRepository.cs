@@ -22,15 +22,15 @@ namespace AdaCredit.Infra.Repositories
     public static List<Employee> RegisteredEmployees
     {
       get => registeredEmployees;
-      private set => registeredEmployees = value;
+      private set => registeredEmployees = (List<Employee>)value;
     }
 
     static EmployeeRepository()
     {
-      LoadEmployees();
+      Load();
     }
 
-    private static void LoadEmployees()
+    private static void Load()
     {
       var fileName = "adaCredit_employee_database.csv";
       var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
@@ -61,7 +61,7 @@ namespace AdaCredit.Infra.Repositories
       }
     }
 
-    private static bool Save()
+    public static bool Save()
     {
       var fileName = "adaCredit_employee_database.csv";
 
@@ -87,118 +87,16 @@ namespace AdaCredit.Infra.Repositories
       }
     }
 
-    public static bool Add(string password)
-    {
-      Employee employee;
-      bool IsUniqueName = false;
-      do
-      {
-        // criar novo employee
-        employee = new Faker<Employee>()
-          .CustomInstantiator(f => new Employee())
-          .RuleFor(e => e.Gender, f => f.PickRandom<Gender>())
-          .RuleFor(e => e.FirstName, f => $"{f.Name.FirstName()} {f.Name.LastName()}")
-          .RuleFor(e => e.UserName, (f, e) => f.Internet.UserName(e.FirstName, e.LastName))
-          .RuleFor(e => e.PasswordSalt, f => GenerateSalt())
-          .FinishWith((f, e) =>
-          {
-            // hash da senha
-            var hashedPassword = HashPassword(password, e.PasswordSalt);
-            e.PasswordHash = hashedPassword;
-          });
-
-        // conferindo se nome é unico
-        if (!RegisteredEmployees.Any(e => e.UserName == employee.UserName))
-          IsUniqueName = true;
-
-      } while (!IsUniqueName);
-
-      employee.IsActive = true;
-      employee.LastLogin = DateTime.Now.ToString("dd/MM/yyyy/HH:mm");
-
-      // adicionar employee
-      RegisteredEmployees.Add(employee);
-
-      Console.WriteLine($"Funcionário {employee.UserName} criado com sucesso!");
-
-      // atualizar base de dados
-      return Save();
-    }
-
     public static bool IsEmpty()
       => RegisteredEmployees.Count == 0;
 
+    public static void Add(Employee employee)
+      => RegisteredEmployees.Add(employee);
+
     public static Employee? Find(string userName)
-    {
-      return RegisteredEmployees.FirstOrDefault(e => e.UserName == userName);
-    }
-
-    public static bool Login(string userName, string password)
-    {
-      var employee = Find(userName);
-
-      if (employee == default)
-        return false;
-
-      if (!employee.IsActive)
-        return false;
-
-      var hashPassword = HashPassword(password, employee.PasswordSalt);
-
-      if (hashPassword == employee.PasswordHash)
-      {
-        employee.LastLogin = DateTime.Now.ToString("dd/MM/yyyy/HH:mm");
-        Save();
-        return true;
-      }
-
-      return false;
-    }
-
-    public static bool VerifyPassword(string userName, string password)
-    {
-      var employee = Find(userName);
-
-      if (employee == default)
-        return false;
-
-      var hashPassword = HashPassword(password, employee.PasswordSalt);
-
-      if (hashPassword == employee.PasswordHash)
-        return true;
-
-      return false;
-    }
-
-    public static bool ChangePassword(string userName, string newPassword)
-    {
-      var employee = Find(userName);
-
-      if (employee == default)
-        return false;
-
-      employee.PasswordSalt = GenerateSalt();
-      var hashedPassword = HashPassword(newPassword, employee.PasswordSalt);
-      employee.PasswordHash = hashedPassword;
-
-      return Save();
-    }
-
-    public static bool Disable(string userName)
-    {
-      var employee = Find(userName);
-
-      if (employee == default)
-        return false;
-
-      employee.IsActive = false;
-
-      return Save();
-    }
+      => RegisteredEmployees.FirstOrDefault(e => e.UserName == userName);
 
     public static List<Employee> GetActive()
-    {
-      return RegisteredEmployees.FindAll(e => e.IsActive);
-    }
+      => RegisteredEmployees.FindAll(e => e.IsActive);
   }
 }

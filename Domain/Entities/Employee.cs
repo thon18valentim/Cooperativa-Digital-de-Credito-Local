@@ -27,7 +27,7 @@ namespace AdaCredit.Domain.Entities
       UserName = userName;
       PasswordHash = passwordHash;
       PasswordSalt = passwordSalt;
-      LastLogin = DateTime.Now.ToString("dd/MM/yyyy/HH:mm");
+      LastLogin = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
       IsActive = true;
     }
 

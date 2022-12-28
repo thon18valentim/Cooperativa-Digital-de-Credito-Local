@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AdaCredit.Infra.Repositories;
 using AdaCredit.Utils;
+using AdaCredit.Domain.UseCases;
 
 namespace AdaCredit.Views
 {
@@ -35,7 +36,7 @@ namespace AdaCredit.Views
         }
         else
         {
-          isLogged = EmployeeRepository.Login(userName, password);
+          isLogged = new DoLogin().Run(userName, password);
         }
         
         if (!isLogged)

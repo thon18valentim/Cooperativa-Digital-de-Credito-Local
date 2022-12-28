@@ -1,32 +1,32 @@
-﻿using System;
+﻿using AdaCredit.Domain.Entities;
+using AdaCredit.Domain.Entities.Maps;
+using CsvHelper;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AdaCredit.Domain.Entities;
-using AdaCredit.Domain.Entities.Maps;
-using CsvHelper;
 
 namespace AdaCredit.Infra.Repositories
 {
-  public sealed class ClientRepository
+  public sealed class AccountRepository
   {
-    private static List<Client> registeredClients;
+    private static List<Account> registeredAccounts;
 
-    public static List<Client> RegisteredClients
+    public static List<Account> RegisteredAccounts
     {
-      get => registeredClients;
-      private set => registeredClients = value;
+      get => registeredAccounts;
+      private set => registeredAccounts = value;
     }
 
     public static void Load()
     {
-      var fileName = "adaCredit_client_database.csv";
+      var fileName = "adaCredit_account_database.csv";
       var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
       var filePath = Path.Combine(desktopPath, fileName);
 
-      RegisteredClients = new();
+      RegisteredAccounts = new();
 
       if (!File.Exists(filePath))
       {
@@ -36,24 +36,24 @@ namespace AdaCredit.Infra.Repositories
 
       try
       {
-        List<Client> entities = new();
+        List<Account> entities = new();
 
         using var reader = new StreamReader(filePath);
         using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
-        csv.Context.RegisterClassMap<ClientMap>();
-        var records = csv.GetRecords<Client>().ToList();
-        RegisteredClients = records;
+        csv.Context.RegisterClassMap<AccountMap>();
+        var records = csv.GetRecords<Account>().ToList();
+        RegisteredAccounts = records;
       }
       catch (Exception ex)
       {
         Console.WriteLine($"{ex.Message} ao ler arquivo {fileName}");
-        RegisteredClients = new();
+        RegisteredAccounts = new();
       }
     }
 
     public static bool Save()
     {
-      var fileName = "adaCredit_client_database.csv";
+      var fileName = "adaCredit_account_database.csv";
 
       try
       {
@@ -63,8 +63,8 @@ namespace AdaCredit.Infra.Repositories
         using var writer = new StreamWriter(filePath);
         using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
         {
-          csv.Context.RegisterClassMap<ClientMap>();
-          csv.WriteRecords(RegisteredClients);
+          csv.Context.RegisterClassMap<AccountMap>();
+          csv.WriteRecords(RegisteredAccounts);
           csv.Flush();
         }
 
@@ -77,16 +77,18 @@ namespace AdaCredit.Infra.Repositories
       }
     }
 
+    public static void Add(Account account)
+      => RegisteredAccounts.Add(account);
+
     public static bool IsEmpty()
-      => RegisteredClients.Count == 0;
+      => RegisteredAccounts.Count == 0;
 
-    public static void Add(Client client)
-      => RegisteredClients.Add(client);
+    public static int GetNextId()
+    {
+      if (RegisteredAccounts.Count == 0)
+        return 1;
 
-    public static Client? Find(string clientCpf)
-      => RegisteredClients.FirstOrDefault(c => c.Cpf == clientCpf);
-
-    public static List<Client> GetActive()
-      => RegisteredClients.FindAll(c => c.IsActive);
+      return RegisteredAccounts[RegisteredAccounts.Count - 1].Id + 1;
+    }
   }
 }

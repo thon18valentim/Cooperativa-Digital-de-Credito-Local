@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Spectre.Console;
 using AdaCredit.Infra.Repositories;
 using AdaCredit.Utils;
+using AdaCredit.Domain.UseCases;
 
 namespace AdaCredit.Views
 {
@@ -34,7 +35,7 @@ namespace AdaCredit.Views
         Console.WriteLine($"Senha antiga de {employee}: ");
         var oldPassword = Util.ReadLinePassword();
 
-        var result = EmployeeRepository.VerifyPassword(employee, oldPassword);
+        var result = new DoPassVerification().Run(employee, oldPassword);
 
         if (!result)
         {
@@ -47,7 +48,7 @@ namespace AdaCredit.Views
         Console.WriteLine($"\nEntre com a nova senha de {employee}: ");
         var newPassword = Util.ReadLinePassword();
 
-        changed = EmployeeRepository.ChangePassword(employee, newPassword);
+        changed = new DoPassChange().Run(employee, newPassword);
 
       } while (!changed);
 
@@ -78,7 +79,7 @@ namespace AdaCredit.Views
         if (string.Equals(employee, "Voltar"))
           break;
 
-        disabled = EmployeeRepository.Disable(employee);
+        disabled = new DoDisableEmployee().Run(employee);
 
       } while (!disabled);
 

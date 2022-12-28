@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AdaCredit.Infra.Repositories;
 using AdaCredit.Utils;
+using AdaCredit.Domain.UseCases;
 
 namespace AdaCredit.Views
 {
@@ -22,7 +23,7 @@ namespace AdaCredit.Views
         Console.WriteLine("Senha do novo funcionário: ");
         var password = Util.ReadLinePassword();
 
-        isRegistered = EmployeeRepository.Add(password);
+        isRegistered = new DoCreateEmployee().Run(password);
 
       } while (!isRegistered);
 
