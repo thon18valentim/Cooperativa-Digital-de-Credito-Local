@@ -33,7 +33,7 @@ namespace AdaCredit.Domain.UseCases
 
             a.Id = AccountRepository.GetNextId();
             a.AgencyNumber = "0001";
-            a.Balance = 0;
+            a.Balance = 0.00M;
 
           });
 

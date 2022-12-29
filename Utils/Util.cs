@@ -115,5 +115,18 @@ namespace AdaCredit.Utils
 
       return seed;
     }
+
+    public static string GetCpf(this string original)
+    {
+      int start = 0;
+
+      for (int i = 0; i < original.Length; i++)
+      {
+        if (original[i] == '-')
+          start = i;
+      }
+
+      return original[(start + 1)..].Trim();
+    }
   }
 }

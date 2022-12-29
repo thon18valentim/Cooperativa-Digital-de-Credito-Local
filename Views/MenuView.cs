@@ -9,9 +9,9 @@ namespace AdaCredit.Views
     {
       var subClient = new ConsoleMenu(Array.Empty<string>(), level: 1)
        .Add("Cadastrar Novo Cliente", () => RegisterClientView.Show())
-       .Add("Consultar os Dados de um Cliente existente", () => Console.WriteLine("Sub_Two"))
+       .Add("Consultar os Dados de um Cliente existente", () => SelectionView.ShowClients())
        .Add("Alterar o Cadastro de um Cliente existente", () => Console.WriteLine("Sub_Three"))
-       .Add("Desativar Cadastro de um Cliente existente", () => Console.WriteLine("Sub_Four"))
+       .Add("Desativar Cadastro de um Cliente existente", () => SelectionView.ShowDisableClient())
        .Add("Voltar", ConsoleMenu.Close)
        .Configure(config =>
        {
@@ -37,7 +37,7 @@ namespace AdaCredit.Views
        });
 
       var subTransactions = new ConsoleMenu(Array.Empty<string>(), level: 1)
-       .Add("Processar Transações (Reconciliação Bancária)", () => Console.WriteLine("Sub_One"))
+       .Add("Processar Transações (Reconciliação Bancária)", () => ProcessTransactionView.Show())
        .Add("Voltar", ConsoleMenu.Close)
        .Configure(config =>
        {
@@ -49,8 +49,8 @@ namespace AdaCredit.Views
        });
 
       var subReports = new ConsoleMenu(Array.Empty<string>(), level: 1)
-       .Add("Exibir Todos os Clientes Ativos com seus Respectivos Saldos", () => Console.WriteLine("Sub_One"))
-       .Add("Exibir Todos os Clientes Inativos", () => Console.WriteLine("Sub_Two"))
+       .Add("Exibir Todos os Clientes Ativos com seus Respectivos Saldos", () => ReportView.ShowActiveClients())
+       .Add("Exibir Todos os Clientes Inativos", () => ReportView.ShowDisabledClients())
        .Add("Exibir Todos os Funcionários Ativos e sua Última Data e Hora de Login", () => ReportView.ShowActiveEmployees())
        .Add("Exibir Transações com Erro (Detalhes da transação e do Erro)", () => Console.WriteLine("Sub_Three"))
        .Add("Voltar", ConsoleMenu.Close)

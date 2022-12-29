@@ -90,5 +90,8 @@ namespace AdaCredit.Infra.Repositories
 
       return RegisteredAccounts[RegisteredAccounts.Count - 1].Id + 1;
     }
+
+    public static Account? GetAccount(int id)
+      => RegisteredAccounts.FirstOrDefault(x => x.Id == id);
   }
 }

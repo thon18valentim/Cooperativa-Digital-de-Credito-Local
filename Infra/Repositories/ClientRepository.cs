@@ -83,10 +83,13 @@ namespace AdaCredit.Infra.Repositories
     public static void Add(Client client)
       => RegisteredClients.Add(client);
 
-    public static Client? Find(string clientCpf)
-      => RegisteredClients.FirstOrDefault(c => c.Cpf == clientCpf);
+    public static Client? Find(string cpf)
+      => RegisteredClients.FirstOrDefault(c => string.Equals(c.Cpf, cpf));
 
     public static List<Client> GetActive()
       => RegisteredClients.FindAll(c => c.IsActive);
+
+    public static List<Client> GetDisable()
+      => RegisteredClients.FindAll(c => !c.IsActive);
   }
 }
