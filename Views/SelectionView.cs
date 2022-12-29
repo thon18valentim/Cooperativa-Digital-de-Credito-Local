@@ -239,11 +239,7 @@ namespace AdaCredit.Views
       if (client == null)
         return;
 
-      var table = new Table();
-
-      table.AddColumn("Nome");
-      table.AddColumn("Cpf");
-      table.AddColumn("Conta");
+      var enableOptions = new List<string>() { "Ativar", "Desativar" };
 
       var account = AccountRepository.GetAccount(client.ClientAccountId);
 
@@ -255,6 +251,12 @@ namespace AdaCredit.Views
       do
       {
         Console.Clear();
+
+        var table = new Table();
+
+        table.AddColumn("Nome");
+        table.AddColumn("Cpf");
+        table.AddColumn("Conta");
 
         table.AddRow(
         client.Name,
@@ -272,11 +274,19 @@ namespace AdaCredit.Views
         Console.WriteLine("Cpf:");
         var cpf = Console.ReadLine();
 
-        // validar cpf
+        var activeConfig = AnsiConsole.Prompt(Util.CreateSelectionList("\nAtive ou desative o cliente", enableOptions));
+        var activeConfigSelected = activeConfig switch
+        {
+          "Ativar" => true,
+          _ => false
+        };
+
+        completed = new DoEditClient().Run(fullName, cpf, client.Cpf, activeConfigSelected);
 
       } while(!completed);
 
-      
+      Console.WriteLine($"\nCliente atualizado com sucesso!");
+      Thread.Sleep(2500);
     }
   }
 }
