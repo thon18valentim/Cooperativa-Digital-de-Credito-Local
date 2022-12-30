@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AdaCredit.Domain.Entities;
 using AdaCredit.Domain.Entities.Enums;
 using AdaCredit.Infra.Repositories;
+using AdaCredit.Domain.UseCases;
 
 namespace AdaCredit.Views
 {
@@ -35,10 +36,16 @@ namespace AdaCredit.Views
         {
           for (int j = 0; j < transactions[i].Length; j++)
           {
+            var entry = transactions[i][j].Entry switch
+            {
+              0 => "Débito",
+              _ => "Crédito"
+            };
+
             table.AddRow(
               $"{transactions[i][j].HomeBankCode} ({transactions[i][j].HomeBankAgency}) - {transactions[i][j].HomeBankAccount}",
               $"{transactions[i][j].DestinationBankCode} ({transactions[i][j].DestinationBankAgency}) - {transactions[i][j].DestinationBankAccount}",
-              $"{transactions[i][j].Type} ({transactions[i][j].Entry})",
+              $"{transactions[i][j].Type} ({entry})",
               string.Format("{0:C}", transactions[i][j].Value)
               );
           }
@@ -46,7 +53,9 @@ namespace AdaCredit.Views
 
         AnsiConsole.Write(table);
 
-        Console.WriteLine("Transações processadas com sucesso!\n");
+        new DoProcessTransactions().Run(transactions);
+
+        Console.WriteLine("Processamento de transações concluído!\n");
       }
 
       Console.WriteLine("Pressione ENTER para voltar");

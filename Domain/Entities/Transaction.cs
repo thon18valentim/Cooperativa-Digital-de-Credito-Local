@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AdaCredit.Domain.Entities.Enums;
+using CsvHelper.Configuration.Attributes;
 
 namespace AdaCredit.Domain.Entities
 {
@@ -18,6 +19,12 @@ namespace AdaCredit.Domain.Entities
     public TransactionType Type { get; set; }
     public int Entry { get; set; }
     public decimal Value { get; set; }
+
+    [Ignore]
+    public string BankName { get; set; }
+
+    [Ignore]
+    public DateTime Date { get; set; }
 
     public Transaction() { }
   }

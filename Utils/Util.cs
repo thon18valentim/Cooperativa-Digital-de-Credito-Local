@@ -174,5 +174,40 @@ namespace AdaCredit.Utils
 
       return cpf.EndsWith(digit);
     }
+
+    public static string GetBankFromFileName(string fileName)
+    {
+      int start = GetLastOf(fileName, '-');
+
+      return fileName[..start].Trim();
+    }
+
+    public static DateTime GetDateFromFileName(string fileName)
+    {
+      int start = GetLastOf(fileName, '-');
+
+      //for (int i = 0; i < fileName.Length; i++)
+      //{
+      //  if (fileName[i] == '-')
+      //    start = i;
+      //}
+
+      var date = 
+        fileName[(start + 1)..].Replace(".csv","").Trim().Insert(4, "/").Insert(7, "/");
+
+      return Convert.ToDateTime(date);
+    }
+
+    private static int GetLastOf(string text, char target)
+    {
+      int index = 0;
+      for (int i = 0; i < text.Length; i++)
+      {
+        if (char.Equals(text[i], target))
+          index = i;
+      }
+
+      return index;
+    }
   }
 }

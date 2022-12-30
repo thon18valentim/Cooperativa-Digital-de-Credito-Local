@@ -47,6 +47,7 @@ namespace AdaCredit.Views
       var table = new Table();
 
       table.AddColumn("Clientes");
+      table.AddColumn("Contas");
       table.AddColumn("Saldo");
 
       var list = ClientRepository.GetActive();
@@ -64,7 +65,7 @@ namespace AdaCredit.Views
           if (account == null)
             account = new Account();
 
-          table.AddRow(c.Name, string.Format("{0:C}", account.Balance.ToString()));
+          table.AddRow(c.Name, account.Number, string.Format("{0:C}", account.Balance.ToString()));
         }
 
         AnsiConsole.Write(table);

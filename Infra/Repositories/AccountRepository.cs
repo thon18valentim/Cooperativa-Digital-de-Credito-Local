@@ -80,6 +80,12 @@ namespace AdaCredit.Infra.Repositories
     public static void Add(Account account)
       => RegisteredAccounts.Add(account);
 
+    public static bool Exists(string number)
+      => RegisteredAccounts.Find(a => a.Number.Replace("-", "") == number.Replace("-", "")) != null;
+
+    public static Account? Find(string number)
+      => RegisteredAccounts.Find(a => a.Number.Replace("-", "") == number.Replace("-", ""));
+
     public static bool IsEmpty()
       => RegisteredAccounts.Count == 0;
 
