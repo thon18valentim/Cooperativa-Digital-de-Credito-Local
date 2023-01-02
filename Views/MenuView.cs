@@ -52,7 +52,7 @@ namespace AdaCredit.Views
        .Add("Exibir Todos os Clientes Ativos com seus Respectivos Saldos", () => ReportView.ShowActiveClients())
        .Add("Exibir Todos os Clientes Inativos", () => ReportView.ShowDisabledClients())
        .Add("Exibir Todos os Funcionários Ativos e sua Última Data e Hora de Login", () => ReportView.ShowActiveEmployees())
-       .Add("Exibir Transações com Erro (Detalhes da transação e do Erro)", () => Console.WriteLine("Sub_Three"))
+       .Add("Exibir Transações com Erro (Detalhes da transação e do Erro)", () => ReportView.ShowFailedTransactions())
        .Add("Voltar", ConsoleMenu.Close)
        .Configure(config =>
        {

@@ -52,6 +52,7 @@ namespace AdaCredit.Infra.Repositories
       var config = new CsvConfiguration(CultureInfo.InvariantCulture)
       {
         HasHeaderRecord = false,
+        NewLine = Environment.NewLine
       };
 
       try
@@ -82,7 +83,49 @@ namespace AdaCredit.Infra.Repositories
       }
       catch (Exception ex)
       {
-        Console.WriteLine($"{ex.Message} ao ler arquivos de transações");
+        Console.WriteLine($"{ex.Message} ao ler arquivos de transações pendentes");
+        return default;
+      }
+    }
+
+    public static Transaction[]? LoadFailed()
+    {
+      DirectoryInfo di = new(failedPath);
+
+      FileInfo[] failedFiles = di.EnumerateFiles("*.csv").ToArray();
+
+      var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+      {
+        HasHeaderRecord = false,
+        NewLine = Environment.NewLine
+      };
+
+      try
+      {
+        List<Transaction> transactions = new();
+
+        for (int i = 0; i < failedFiles.Length; i++)
+        {
+          var filePath = Path.Combine(failedPath, failedFiles[i].Name);
+
+          using var reader = new StreamReader(filePath);
+          using (var csv = new CsvReader(reader, config))
+          {
+            while (csv.Read())
+            {
+              var record = csv.GetRecord<Transaction>();
+              record.ErrorMessage = csv.GetField(9);
+
+              transactions.Add(record);
+            }
+          }
+        }
+
+        return transactions.ToArray();
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine($"{ex.Message} ao ler arquivos de transações com falhas");
         return default;
       }
     }
@@ -107,6 +150,7 @@ namespace AdaCredit.Infra.Repositories
       var config = new CsvConfiguration(CultureInfo.InvariantCulture)
       {
         HasHeaderRecord = false,
+        NewLine = Environment.NewLine
       };
 
       try
@@ -148,6 +192,7 @@ namespace AdaCredit.Infra.Repositories
       var config = new CsvConfiguration(CultureInfo.InvariantCulture)
       {
         HasHeaderRecord = false,
+        NewLine = Environment.NewLine
       };
 
       try

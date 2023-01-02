@@ -62,7 +62,8 @@ namespace AdaCredit.Views
 
     public static void ShowDisableEmployee()
     {
-      var options = EmployeeRepository.RegisteredEmployees.Select(e => e.UserName).ToList();
+      var list = EmployeeRepository.RegisteredEmployees.FindAll(e => e.IsActive).ToList();
+      var options = list.Select(e => e.UserName).ToList();
       options.Add("Voltar");
 
       var employee = "um Funcionário";
@@ -82,6 +83,11 @@ namespace AdaCredit.Views
 
         disabled = new DoDisableEmployee().Run(employee);
 
+        if (!disabled)
+        {
+          Console.WriteLine("\nFalha ao desativar funcionário. Deve haver pelo menos um funcionário ativo no sistema");
+        }
+
       } while (!disabled);
 
       if (disabled)
@@ -93,7 +99,8 @@ namespace AdaCredit.Views
 
     public static void ShowDisableClient()
     {
-      var options = ClientRepository.RegisteredClients.Select(c => $"{c.Name} - {c.Cpf}").ToList();
+      var list = ClientRepository.RegisteredClients.FindAll(c => c.IsActive).ToList();
+      var options = list.Select(c => $"{c.Name} - {c.Cpf}").ToList();
       options.Add("Voltar");
 
       var client = "um Cliente";
@@ -186,7 +193,7 @@ namespace AdaCredit.Views
         client.Cpf,
         account.Number,
         account.AgencyNumber,
-        string.Format("{0:C}", account.Balance.ToString()));
+        string.Format("{0:C}", account.Balance));
 
       AnsiConsole.Write(table);
 

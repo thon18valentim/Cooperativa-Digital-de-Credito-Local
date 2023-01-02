@@ -1,6 +1,7 @@
 ﻿using AdaCredit.Domain.Entities;
 using AdaCredit.Domain.Entities.Maps;
 using CsvHelper;
+using CsvHelper.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -38,8 +39,13 @@ namespace AdaCredit.Infra.Repositories
       {
         List<Account> entities = new();
 
+        var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+          NewLine = Environment.NewLine,
+        };
+
         using var reader = new StreamReader(filePath);
-        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+        using var csv = new CsvReader(reader, config);
         csv.Context.RegisterClassMap<AccountMap>();
         var records = csv.GetRecords<Account>().ToList();
         RegisteredAccounts = records;
@@ -60,8 +66,13 @@ namespace AdaCredit.Infra.Repositories
         var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         var filePath = Path.Combine(desktopPath, fileName);
 
+        var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+          NewLine = Environment.NewLine,
+        };
+
         using var writer = new StreamWriter(filePath);
-        using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+        using (var csv = new CsvWriter(writer, config))
         {
           csv.Context.RegisterClassMap<AccountMap>();
           csv.WriteRecords(RegisteredAccounts);

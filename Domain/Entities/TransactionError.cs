@@ -11,10 +11,10 @@ namespace AdaCredit.Domain.Entities
     public string Message { get; set; }
     public DateTime Date { get; set; }
 
-    public TransactionError(string message, DateTime date)
+    public TransactionError(string message)
     {
       Message = message;
-      Date = date;
+      Date = DateTime.Now;
     }
 
     public TransactionError() { }

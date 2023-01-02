@@ -17,6 +17,9 @@ namespace AdaCredit.Domain.UseCases
 
     public bool Run(string userName)
     {
+      if (EmployeeRepository.CountDisable() == EmployeeRepository.RegisteredEmployees.Count - 1)
+        return false;
+
       var employee = EmployeeRepository.Find(userName);
 
       if (employee == default)

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AdaCredit.Domain.Entities;
 using AdaCredit.Domain.Entities.Maps;
 using CsvHelper;
+using CsvHelper.Configuration;
 
 namespace AdaCredit.Infra.Repositories
 {
@@ -38,8 +39,13 @@ namespace AdaCredit.Infra.Repositories
       {
         List<Client> entities = new();
 
+        var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+          NewLine = Environment.NewLine,
+        };
+
         using var reader = new StreamReader(filePath);
-        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+        using var csv = new CsvReader(reader, config);
         csv.Context.RegisterClassMap<ClientMap>();
         var records = csv.GetRecords<Client>().ToList();
         RegisteredClients = records;
@@ -60,8 +66,13 @@ namespace AdaCredit.Infra.Repositories
         var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         var filePath = Path.Combine(desktopPath, fileName);
 
+        var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+          NewLine = Environment.NewLine,
+        };
+
         using var writer = new StreamWriter(filePath);
-        using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+        using (var csv = new CsvWriter(writer, config))
         {
           csv.Context.RegisterClassMap<ClientMap>();
           csv.WriteRecords(RegisteredClients);
@@ -85,6 +96,17 @@ namespace AdaCredit.Infra.Repositories
 
     public static Client? Find(string cpf)
       => RegisteredClients.FirstOrDefault(c => string.Equals(c.Cpf, cpf));
+
+    private static Client? GetClientByAccountId(int id)
+      => RegisteredClients.FirstOrDefault(c => c.ClientAccountId == id);
+
+    public static bool IsActive(string accountNumber)
+    {
+      var account = AccountRepository.Find(accountNumber);
+      var client = GetClientByAccountId(account.Id);
+
+      return client.IsActive;
+    }
 
     public static List<Client> GetActive()
       => RegisteredClients.FindAll(c => c.IsActive);

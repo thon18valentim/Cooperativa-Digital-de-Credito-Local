@@ -26,6 +26,9 @@ namespace AdaCredit.Domain.Entities
     [Ignore]
     public DateTime Date { get; set; }
 
+    [Ignore]
+    public string ErrorMessage { get; set; }
+
     public Transaction() { }
   }
 }

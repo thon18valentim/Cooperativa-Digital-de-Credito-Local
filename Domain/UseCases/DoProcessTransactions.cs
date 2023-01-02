@@ -29,6 +29,17 @@ namespace AdaCredit.Domain.UseCases
           var sameBank = true;
           var fromHome = false;
 
+          // verificando se contas são iguais
+          if (string.Equals(transactions[i][j].HomeBankCode, transactions[i][j].DestinationBankCode))
+          {
+            if (string.Equals(transactions[i][j].HomeBankAccount, transactions[i][j].DestinationBankAccount))
+            {
+              failedTransactions.Add(transactions[i][j]);
+              failedErrors.Add(new("Erro, as contas da transação se referem ao mesmo registro"));
+              continue;
+            }
+          }
+
           // verificando se contas são do mesmo banco
           if (!string.Equals(transactions[i][j].HomeBankCode, transactions[i][j].DestinationBankCode))
           {
@@ -36,28 +47,28 @@ namespace AdaCredit.Domain.UseCases
             if (transactions[i][j].Type == TransactionType.TEF)
             {
               failedTransactions.Add(transactions[i][j]);
-              failedErrors.Add(new("Transações de tipo TEF devem ser entre clientes do mesmo banco", DateTime.Now));
+              failedErrors.Add(new("Transações de tipo TEF devem ser entre clientes do mesmo banco"));
               continue;
             }
           }
 
-          // verificando existencia da conta
+          // verificando existencia da conta e se estão ativas
           if (string.Equals(transactions[i][j].HomeBankCode, "777"))
           {
-            if (!AccountExists(transactions[i][j].HomeBankAccount))
+            if (!AccountAvailable(transactions[i][j].HomeBankAccount))
             {
               failedTransactions.Add(transactions[i][j]);
-              failedErrors.Add(new("Conta de origem não existe", DateTime.Now));
+              failedErrors.Add(new("Conta de origem não existe ou está desativada"));
               continue;
             }
             fromHome = true;
           }
           if (string.Equals(transactions[i][j].DestinationBankAccount, "777"))
           {
-            if (!AccountExists(transactions[i][j].DestinationBankAccount))
+            if (!AccountAvailable(transactions[i][j].DestinationBankAccount))
             {
               failedTransactions.Add(transactions[i][j]);
-              failedErrors.Add(new("Conta de destino não existe", DateTime.Now));
+              failedErrors.Add(new("Conta de origem não existe ou está desativada"));
               continue;
             }
           }
@@ -65,7 +76,7 @@ namespace AdaCredit.Domain.UseCases
           if (!ApplyTransaction(transactions[i][j], fromHome, sameBank))
           {
             failedTransactions.Add(transactions[i][j]);
-            failedErrors.Add(new("Saldo insuficiente", DateTime.Now));
+            failedErrors.Add(new("Saldo insuficiente"));
             continue;
           }
 
@@ -89,8 +100,10 @@ namespace AdaCredit.Domain.UseCases
       return 6M;
     }
 
-    private bool AccountExists(string accountNumber)
-      => AccountRepository.Exists(accountNumber);
+    private bool AccountAvailable(string accountNumber)
+    {
+      return AccountRepository.Exists(accountNumber) && ClientRepository.IsActive(accountNumber);
+    }
 
     private bool HasEnoughCash(string accountNumber, decimal value)
       => AccountRepository.Find(accountNumber)?.Balance >= value;

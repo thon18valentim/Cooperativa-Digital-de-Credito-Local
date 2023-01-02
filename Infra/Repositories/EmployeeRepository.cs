@@ -12,6 +12,7 @@ using AdaCredit.Domain.Entities.Enums;
 using BCrypt.Net;
 using static BCrypt.Net.BCrypt;
 using System.Collections;
+using CsvHelper.Configuration;
 
 namespace AdaCredit.Infra.Repositories
 {
@@ -48,8 +49,13 @@ namespace AdaCredit.Infra.Repositories
       {
         List<Employee> entities = new();
 
+        var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+          NewLine = Environment.NewLine,
+        };
+
         using var reader = new StreamReader(filePath);
-        using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
+        using var csv = new CsvReader(reader, config);
         csv.Context.RegisterClassMap<EmployeeMap>();
         var records = csv.GetRecords<Employee>().ToList();
         RegisteredEmployees = records;
@@ -70,8 +76,13 @@ namespace AdaCredit.Infra.Repositories
         var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         var filePath = Path.Combine(desktopPath, fileName);
 
+        var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+          NewLine = Environment.NewLine,
+        };
+
         using var writer = new StreamWriter(filePath);
-        using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+        using (var csv = new CsvWriter(writer, config))
         {
           csv.Context.RegisterClassMap<EmployeeMap>();
           csv.WriteRecords(RegisteredEmployees);
@@ -98,5 +109,10 @@ namespace AdaCredit.Infra.Repositories
 
     public static List<Employee> GetActive()
       => RegisteredEmployees.FindAll(e => e.IsActive);
+
+    public static int CountDisable()
+    {
+      return RegisteredEmployees.Count(e => !e.IsActive);
+    } 
   }
 }
