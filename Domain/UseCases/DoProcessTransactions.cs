@@ -36,7 +36,7 @@ namespace AdaCredit.Domain.UseCases
             if (transactions[i][j].Type == TransactionType.TEF)
             {
               failedTransactions.Add(transactions[i][j]);
-              failedErrors.Add(new("Transações de tipo TEF devem ser de clientes do mesmo banco", DateTime.Now));
+              failedErrors.Add(new("Transações de tipo TEF devem ser entre clientes do mesmo banco", DateTime.Now));
               continue;
             }
           }

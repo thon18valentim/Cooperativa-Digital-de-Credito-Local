@@ -186,12 +186,6 @@ namespace AdaCredit.Utils
     {
       int start = GetLastOf(fileName, '-');
 
-      //for (int i = 0; i < fileName.Length; i++)
-      //{
-      //  if (fileName[i] == '-')
-      //    start = i;
-      //}
-
       var date = 
         fileName[(start + 1)..].Replace(".csv","").Trim().Insert(4, "/").Insert(7, "/");
 

@@ -90,7 +90,19 @@ namespace AdaCredit.Infra.Repositories
     public static bool SaveCompleted(List<Transaction> transactions, string bankName)
     {
       DateTime now = DateTime.Now;
-      var fileName = $"{bankName}-{now.Year}{now.Month}{now.Day}-completed.csv";
+      var fileName = 
+        $"{bankName}-{now.Year}{now.Month.ToString().PadLeft(2, '0')}{now.Day.ToString().PadLeft(2, '0')}-completed.csv";
+      var filePath = Path.Combine(completedPath, fileName);
+
+      if (File.Exists(filePath))
+      {
+        DirectoryInfo di = new(completedPath);
+        var count = di.EnumerateFiles().Count(f => Util.GetBankFromFileName(f.Name) == bankName);
+
+        fileName = 
+          $"{bankName}-{now.Year}{now.Month.ToString().PadLeft(2, '0')}{now.Day.ToString().PadLeft(2, '0')}({count + 1})-completed.csv";
+        filePath = Path.Combine(completedPath, fileName);
+      }
 
       var config = new CsvConfiguration(CultureInfo.InvariantCulture)
       {
@@ -99,8 +111,6 @@ namespace AdaCredit.Infra.Repositories
 
       try
       {
-        var filePath = Path.Combine(completedPath, fileName);
-
         using var writer = new StreamWriter(filePath);
         using (var csv = new CsvWriter(writer, config))
         {
@@ -121,7 +131,19 @@ namespace AdaCredit.Infra.Repositories
     public static bool SaveFailure(List<Transaction> transactions, List<TransactionError> errors, string bankName)
     {
       DateTime now = DateTime.Now;
-      var fileName = $"{bankName}-{now.Year}{now.Month}{now.Day}-failed.csv";
+      var fileName = 
+        $"{bankName}-{now.Year}{now.Month.ToString().PadLeft(2, '0')}{now.Day.ToString().PadLeft(2, '0')}-failed.csv";
+      var filePath = Path.Combine(failedPath, fileName);
+
+      if (File.Exists(filePath))
+      {
+        DirectoryInfo di = new(failedPath);
+        var count = di.EnumerateFiles().Count(f => Util.GetBankFromFileName(f.Name) == bankName);
+
+        fileName =
+          $"{bankName}-{now.Year}{now.Month.ToString().PadLeft(2, '0')}{now.Day.ToString().PadLeft(2, '0')}({count + 1})-failed.csv";
+        filePath = Path.Combine(failedPath, fileName);
+      }
 
       var config = new CsvConfiguration(CultureInfo.InvariantCulture)
       {
@@ -130,21 +152,9 @@ namespace AdaCredit.Infra.Repositories
 
       try
       {
-        var filePath = Path.Combine(failedPath, fileName);
-
-        //using var writer = new StreamWriter(filePath);
-        //using (var csv = new CsvWriter(writer, config))
-        //{
-        //  csv.Context.RegisterClassMap<TransactionMap>();
-        //  csv.WriteRecords(transactions);
-        //  csv.Flush();
-        //}
-
         using (var writer = new StreamWriter(filePath))
         using (var csv = new CsvWriter(writer, config))
         {
-          //csv.WriteHeader<Transaction>();
-          //csv.NextRecord();
           int index = 0;
           foreach (var record in transactions)
           {
