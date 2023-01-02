@@ -10,9 +10,9 @@ namespace AdaCredit.Domain.Entities
 {
   public sealed class Transaction
   {
-    public string HomeBankCode { get; set; }
-    public string HomeBankAgency { get; set; }
-    public string HomeBankAccount { get; set; }
+    public string OriginBankCode { get; set; }
+    public string OriginBankAgency { get; set; }
+    public string OriginBankAccount { get; set; }
     public string DestinationBankCode { get; set; }
     public string DestinationBankAgency { get; set; }
     public string DestinationBankAccount { get; set; }

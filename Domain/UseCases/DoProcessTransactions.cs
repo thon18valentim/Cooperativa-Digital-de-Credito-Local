@@ -30,9 +30,9 @@ namespace AdaCredit.Domain.UseCases
           var fromHome = false;
 
           // verificando se contas são iguais
-          if (string.Equals(transactions[i][j].HomeBankCode, transactions[i][j].DestinationBankCode))
+          if (string.Equals(transactions[i][j].OriginBankCode, transactions[i][j].DestinationBankCode))
           {
-            if (string.Equals(transactions[i][j].HomeBankAccount, transactions[i][j].DestinationBankAccount))
+            if (string.Equals(transactions[i][j].OriginBankAccount, transactions[i][j].DestinationBankAccount))
             {
               failedTransactions.Add(transactions[i][j]);
               failedErrors.Add(new("Erro, as contas da transação se referem ao mesmo registro"));
@@ -41,7 +41,7 @@ namespace AdaCredit.Domain.UseCases
           }
 
           // verificando se contas são do mesmo banco
-          if (!string.Equals(transactions[i][j].HomeBankCode, transactions[i][j].DestinationBankCode))
+          if (!string.Equals(transactions[i][j].OriginBankCode, transactions[i][j].DestinationBankCode))
           {
             sameBank = false;
             if (transactions[i][j].Type == TransactionType.TEF)
@@ -53,9 +53,9 @@ namespace AdaCredit.Domain.UseCases
           }
 
           // verificando existencia da conta e se estão ativas
-          if (string.Equals(transactions[i][j].HomeBankCode, "777"))
+          if (string.Equals(transactions[i][j].OriginBankCode, "777"))
           {
-            if (!AccountAvailable(transactions[i][j].HomeBankAccount))
+            if (!AccountAvailable(transactions[i][j].OriginBankAccount))
             {
               failedTransactions.Add(transactions[i][j]);
               failedErrors.Add(new("Conta de origem não existe ou está desativada"));
@@ -135,14 +135,14 @@ namespace AdaCredit.Domain.UseCases
 
       if (sameBank)
       {
-        originAccount = AccountRepository.Find(transaction.HomeBankAccount);
+        originAccount = AccountRepository.Find(transaction.OriginBankAccount);
         destinationAccount = AccountRepository.Find(transaction.DestinationBankAccount);
 
         var rate = GenerateRate(transaction);
 
         if (transaction.Entry == 0) // Debit
         {
-          if (!HasEnoughCash(transaction.HomeBankAccount, transaction.Value))
+          if (!HasEnoughCash(transaction.OriginBankAccount, transaction.Value))
             return false;
 
           originAccount.Balance -= transaction.Value + rate;
@@ -166,11 +166,11 @@ namespace AdaCredit.Domain.UseCases
 
         if (fromHome)
         {
-          originAccount = AccountRepository.Find(transaction.HomeBankAccount);
+          originAccount = AccountRepository.Find(transaction.OriginBankAccount);
 
           if (transaction.Entry == 0) // Debit
           {
-            if (!HasEnoughCash(transaction.HomeBankAccount, transaction.Value))
+            if (!HasEnoughCash(transaction.OriginBankAccount, transaction.Value))
               return false;
 
             originAccount.Balance -= transaction.Value + rate;

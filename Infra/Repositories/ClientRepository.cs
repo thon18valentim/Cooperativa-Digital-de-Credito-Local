@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using AdaCredit.Domain.Entities;
@@ -21,11 +22,18 @@ namespace AdaCredit.Infra.Repositories
       private set => registeredClients = value;
     }
 
+    private static readonly string  databasePath;
+
+    static ClientRepository()
+    {
+      databasePath = 
+        Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName;
+    }
+
     public static void Load()
     {
       var fileName = "adaCredit_client_database.csv";
-      var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-      var filePath = Path.Combine(desktopPath, fileName);
+      var filePath = Path.Combine(databasePath, fileName);
 
       RegisteredClients = new();
 
@@ -63,8 +71,7 @@ namespace AdaCredit.Infra.Repositories
 
       try
       {
-        var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-        var filePath = Path.Combine(desktopPath, fileName);
+        var filePath = Path.Combine(databasePath, fileName);
 
         var config = new CsvConfiguration(CultureInfo.InvariantCulture)
         {

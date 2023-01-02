@@ -134,7 +134,7 @@ namespace AdaCredit.Views
           };
 
           table.AddRow(
-            $"{transactions[i].HomeBankCode} ({transactions[i].HomeBankAgency}) - {transactions[i].HomeBankAccount}",
+            $"{transactions[i].OriginBankCode} ({transactions[i].OriginBankAgency}) - {transactions[i].OriginBankAccount}",
             $"{transactions[i].DestinationBankCode} ({transactions[i].DestinationBankAgency}) - {transactions[i].DestinationBankAccount}",
             $"{string.Format("{0:C}", transactions[i].Value)} - {transactions[i].Type} ({entry})",
             transactions[i].ErrorMessage

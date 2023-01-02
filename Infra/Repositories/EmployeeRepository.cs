@@ -13,6 +13,7 @@ using BCrypt.Net;
 using static BCrypt.Net.BCrypt;
 using System.Collections;
 using CsvHelper.Configuration;
+using System.Reflection;
 
 namespace AdaCredit.Infra.Repositories
 {
@@ -26,16 +27,19 @@ namespace AdaCredit.Infra.Repositories
       private set => registeredEmployees = (List<Employee>)value;
     }
 
+    private static readonly string databasePath;
+
     static EmployeeRepository()
     {
+      databasePath =
+        Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName;
       Load();
     }
 
     private static void Load()
     {
       var fileName = "adaCredit_employee_database.csv";
-      var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-      var filePath = Path.Combine(desktopPath, fileName);
+      var filePath = Path.Combine(databasePath, fileName);
 
       RegisteredEmployees = new();
 
@@ -73,8 +77,7 @@ namespace AdaCredit.Infra.Repositories
 
       try
       {
-        var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-        var filePath = Path.Combine(desktopPath, fileName);
+        var filePath = Path.Combine(databasePath, fileName);
 
         var config = new CsvConfiguration(CultureInfo.InvariantCulture)
         {

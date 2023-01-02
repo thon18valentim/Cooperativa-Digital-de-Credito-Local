@@ -11,9 +11,9 @@ namespace AdaCredit.Domain.Entities.Maps
   {
     public TransactionMap()
     {
-      Map(m => m.HomeBankCode).Name("homeBankCode");
-      Map(m => m.HomeBankAgency).Name("homeBankAgency");
-      Map(m => m.HomeBankAccount).Name("homeBankNumber");
+      Map(m => m.OriginBankCode).Name("originBankCode");
+      Map(m => m.OriginBankAgency).Name("originBankAgency");
+      Map(m => m.OriginBankAccount).Name("originBankNumber");
       Map(m => m.DestinationBankCode).Name("destinationBankCode");
       Map(m => m.DestinationBankAgency).Name("destinationBankAgency");
       Map(m => m.DestinationBankAccount).Name("destinationBankNumber");
