@@ -4,18 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AdaCredit.Infra.Repositories;
+using AdaCredit.Utils;
 
 namespace AdaCredit.Domain.UseCases
 {
   public sealed class DoDisableClient : IUseCase
   {
-    public bool Run(string param1, string param2)
+    public bool Run(IEnumerable<IUseCaseParameter> parameters)
     {
-      throw new NotImplementedException();
-    }
+      var cpf = parameters.FirstOrDefault(x => x.ParameterName == "Cpf").ToStringValue();
 
-    public bool Run(string cpf)
-    {
       var client = ClientRepository.Find(cpf);
 
       if (client == default)

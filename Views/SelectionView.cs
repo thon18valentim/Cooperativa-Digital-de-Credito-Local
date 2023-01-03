@@ -36,7 +36,8 @@ namespace AdaCredit.Views
         Console.WriteLine($"Senha antiga de {employee}: ");
         var oldPassword = Util.ReadLinePassword();
 
-        var result = new DoPassVerification().Run(employee, oldPassword);
+        var tuple1 = new StringUseCaseParameter[] { ("UserName", employee), ("OldPassword", oldPassword) };
+        var result = new DoPassVerification().Run(tuple1);
 
         if (!result)
         {
@@ -49,7 +50,8 @@ namespace AdaCredit.Views
         Console.WriteLine($"\nEntre com a nova senha de {employee}: ");
         var newPassword = Util.ReadLinePassword();
 
-        changed = new DoPassChange().Run(employee, newPassword);
+        var tuple2 = new StringUseCaseParameter[] { ("UserName", employee), ("NewPassword", newPassword) };
+        changed = new DoPassChange().Run(tuple2);
 
       } while (!changed);
 
@@ -62,7 +64,7 @@ namespace AdaCredit.Views
 
     public static void ShowDisableEmployee()
     {
-      var list = EmployeeRepository.RegisteredEmployees.FindAll(e => e.IsActive).ToList();
+      var list = EmployeeRepository.Get().FindAll(e => e.IsActive).ToList();
       var options = list.Select(e => e.UserName).ToList();
       options.Add("Voltar");
 
@@ -81,7 +83,8 @@ namespace AdaCredit.Views
         if (string.Equals(employee, "Voltar"))
           break;
 
-        disabled = new DoDisableEmployee().Run(employee);
+        var tuple = new StringUseCaseParameter[] { ("UserName", employee) };
+        disabled = new DoDisableEmployee().Run(tuple);
 
         if (!disabled)
         {
@@ -118,8 +121,8 @@ namespace AdaCredit.Views
         if (string.Equals(client, "Voltar"))
           break;
 
-        var cpf = client.GetCpf();
-        disabled = new DoDisableClient().Run(cpf);
+        var tuple = new StringUseCaseParameter[] { ("Cpf", client.GetCpf()) };
+        disabled = new DoDisableClient().Run(tuple);
 
       } while (!disabled);
 
@@ -288,7 +291,8 @@ namespace AdaCredit.Views
           _ => false
         };
 
-        completed = new DoEditClient().Run(fullName, cpf, client.Cpf, activeConfigSelected);
+        var tuple = new StringUseCaseParameter[] { ("Name", fullName), ("Cpf", cpf), ("OldCpf", client.Cpf), ("ActiveConfigSelected", activeConfigSelected.ToString()) };
+        completed = new DoEditClient().Run(tuple);
 
       } while(!completed);
 

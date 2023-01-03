@@ -12,14 +12,10 @@ namespace AdaCredit.Domain.UseCases
 {
   public sealed class DoCreateAccount : IUseCase
   {
-    public bool Run(string param1, string param2)
-    {
-      throw new NotImplementedException();
-    }
+    Account? account;
 
-    public Account Run()
+    public bool Run(IEnumerable<IUseCaseParameter> parameter = null)
     {
-      Account account;
       bool IsUniqueAccount = false;
 
       do
@@ -43,7 +39,10 @@ namespace AdaCredit.Domain.UseCases
 
       } while (!IsUniqueAccount);
 
-      return account;
+      return true;
     }
+
+    public Account? GetAccount()
+      => account;
   }
 }

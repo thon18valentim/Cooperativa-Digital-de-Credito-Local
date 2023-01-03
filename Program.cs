@@ -3,7 +3,6 @@ using AdaCredit.Views;
 using AdaCredit.Domain.Entities;
 using AdaCredit.Utils;
 using AdaCredit.Infra.Repositories;
-using System.Reflection;
 
 namespace AdaCredit
 {

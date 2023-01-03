@@ -4,20 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AdaCredit.Infra.Repositories;
+using AdaCredit.Utils;
 using static BCrypt.Net.BCrypt;
 
 namespace AdaCredit.Domain.UseCases
 {
   public sealed class DoDisableEmployee : IUseCase
   {
-    public bool Run(string param1, string param2)
+    public bool Run(IEnumerable<IUseCaseParameter> parameters)
     {
-      throw new NotImplementedException();
-    }
+      var userName = parameters.FirstOrDefault(x => x.ParameterName == "UserName").ToStringValue();
 
-    public bool Run(string userName)
-    {
-      if (EmployeeRepository.CountDisable() == EmployeeRepository.RegisteredEmployees.Count - 1)
+      if (EmployeeRepository.CountDisable() == EmployeeRepository.Get().Count - 1)
         return false;
 
       var employee = EmployeeRepository.Find(userName);

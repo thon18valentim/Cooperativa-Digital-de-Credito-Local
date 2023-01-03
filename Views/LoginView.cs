@@ -36,7 +36,8 @@ namespace AdaCredit.Views
         }
         else
         {
-          isLogged = new DoLogin().Run(userName, password);
+          var tuple = new StringUseCaseParameter[] { ("UserName", userName), ("Password", password) };
+          isLogged = new DoLogin().Run(tuple);
         }
         
         if (!isLogged)

@@ -11,13 +11,15 @@ namespace AdaCredit.Domain.UseCases
 {
   public sealed class DoEditClient : IUseCase
   {
-    public bool Run(string param1, string param2)
+    public bool Run(IEnumerable<IUseCaseParameter> parameters)
     {
-      throw new NotImplementedException();
-    }
+      // string name, string cpf, string oldCpf, bool activeConfigSelected
 
-    public bool Run(string name, string cpf, string oldCpf, bool activeConfigSelected)
-    {
+      var name = parameters.FirstOrDefault(x => x.ParameterName == "Name").ToStringValue();
+      var cpf = parameters.FirstOrDefault(x => x.ParameterName == "Cpf").ToStringValue();
+      var oldCpf = parameters.FirstOrDefault(x => x.ParameterName == "OldCpf").ToStringValue();
+      var activeConfigSelected = parameters.FirstOrDefault(x => x.ParameterName == "ActiveConfigSelected").ToBool();
+
       if (name == null || cpf == null)
         return false;
 

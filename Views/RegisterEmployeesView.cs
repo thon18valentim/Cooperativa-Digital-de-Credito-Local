@@ -23,7 +23,8 @@ namespace AdaCredit.Views
         Console.WriteLine("Senha do novo funcionário: ");
         var password = Util.ReadLinePassword();
 
-        isRegistered = new DoCreateEmployee().Run(password);
+        var tuple = new StringUseCaseParameter[] { ("Password", password) };
+        isRegistered = new DoCreateEmployee().Run(tuple);
 
       } while (!isRegistered);
 

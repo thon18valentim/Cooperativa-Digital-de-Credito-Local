@@ -5,6 +5,7 @@ using AdaCredit.Domain.Entities.Maps;
 using System.Collections;
 using CsvHelper.Configuration;
 using Spectre.Console;
+using AdaCredit.Domain.UseCases;
 
 namespace AdaCredit.Utils
 {
@@ -202,6 +203,21 @@ namespace AdaCredit.Utils
       }
 
       return index;
+    }
+
+    public static bool ToBool(this IUseCaseParameter parameter)
+    {
+      return Convert.ToBoolean(parameter.ParameterValue);
+    }
+
+    public static string? ToStringValue(this IUseCaseParameter parameter)
+    {
+      return Convert.ToString(parameter.ParameterValue);
+    }
+
+    public static List<T> ToList<T>(this IUseCaseParameter parameter)
+    {
+      return (List<T>)parameter.ParameterValue;
     }
   }
 }

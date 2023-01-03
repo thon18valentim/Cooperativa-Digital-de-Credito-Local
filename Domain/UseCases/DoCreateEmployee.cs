@@ -8,18 +8,16 @@ using AdaCredit.Domain.Entities;
 using AdaCredit.Domain.Entities.Enums;
 using Bogus;
 using static BCrypt.Net.BCrypt;
+using AdaCredit.Utils;
 
 namespace AdaCredit.Domain.UseCases
 {
   public class DoCreateEmployee : IUseCase
   {
-    public bool Run(string param1, string param2)
+    public bool Run(IEnumerable<IUseCaseParameter> parameters)
     {
-      throw new NotImplementedException();
-    }
+      var password = parameters.FirstOrDefault(x => x.ParameterName == "Password").ToStringValue();
 
-    public bool Run(string password)
-    {
       Employee employee;
       bool IsUniqueName = false;
       do

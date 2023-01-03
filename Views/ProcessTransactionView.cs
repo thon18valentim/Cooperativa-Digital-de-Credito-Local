@@ -53,7 +53,7 @@ namespace AdaCredit.Views
 
         AnsiConsole.Write(table);
 
-        new DoProcessTransactions().Run(transactions);
+        //new DoProcessTransactions().Run(transactions);
 
         Console.WriteLine("Processamento de transações concluído!\n");
       }

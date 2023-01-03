@@ -21,7 +21,7 @@ namespace AdaCredit.Infra.Repositories
   {
     private static List<Employee> registeredEmployees;
 
-    public static List<Employee> RegisteredEmployees
+    public static IEnumerable<Employee> RegisteredEmployees
     {
       get => registeredEmployees;
       private set => registeredEmployees = (List<Employee>)value;
@@ -36,12 +36,15 @@ namespace AdaCredit.Infra.Repositories
       Load();
     }
 
+    public static List<Employee> Get()
+      => RegisteredEmployees.ToList();
+
     private static void Load()
     {
       var fileName = "adaCredit_employee_database.csv";
       var filePath = Path.Combine(databasePath, fileName);
 
-      RegisteredEmployees = new();
+      registeredEmployees = new();
 
       if (!File.Exists(filePath))
       {
@@ -67,7 +70,7 @@ namespace AdaCredit.Infra.Repositories
       catch (Exception ex)
       {
         Console.WriteLine($"{ex.Message} ao ler arquivo {fileName}");
-        RegisteredEmployees = new();
+        registeredEmployees = new();
       }
     }
 
@@ -102,16 +105,16 @@ namespace AdaCredit.Infra.Repositories
     }
 
     public static bool IsEmpty()
-      => RegisteredEmployees.Count == 0;
+      => registeredEmployees.Count == 0;
 
     public static void Add(Employee employee)
-      => RegisteredEmployees.Add(employee);
+      => registeredEmployees.Add(employee);
 
     public static Employee? Find(string userName)
       => RegisteredEmployees.FirstOrDefault(e => e.UserName == userName);
 
     public static List<Employee> GetActive()
-      => RegisteredEmployees.FindAll(e => e.IsActive);
+      => registeredEmployees.FindAll(e => e.IsActive);
 
     public static int CountDisable()
     {

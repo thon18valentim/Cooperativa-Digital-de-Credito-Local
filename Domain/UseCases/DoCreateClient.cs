@@ -13,12 +13,7 @@ namespace AdaCredit.Domain.UseCases
 {
   public sealed class DoCreateClient : IUseCase
   {
-    public bool Run(string param1, string param2)
-    {
-      throw new NotImplementedException();
-    }
-
-    public bool Run()
+    public bool Run(IEnumerable<IUseCaseParameter> parameters = null)
     {
       Client client;
       Account account = new();
@@ -36,7 +31,9 @@ namespace AdaCredit.Domain.UseCases
             var cpf = Util.GenerateCpf();
             c.Cpf = cpf;
 
-            account = new DoCreateAccount().Run();
+            var createAccount = new DoCreateAccount();
+            createAccount.Run();
+            account = createAccount.GetAccount();
             c.ClientAccountId = account.Id;
 
           });

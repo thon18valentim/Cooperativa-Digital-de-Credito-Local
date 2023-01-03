@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AdaCredit.Domain.Entities;
 using AdaCredit.Domain.Entities.Enums;
 using AdaCredit.Infra.Repositories;
+using AdaCredit.Utils;
 
 namespace AdaCredit.Domain.UseCases
 {
@@ -14,14 +15,10 @@ namespace AdaCredit.Domain.UseCases
     private List<Transaction> completedTransactions = new();
     private List<Transaction> failedTransactions = new();
     private List<TransactionError> failedErrors = new();
-
-    public bool Run(string param1, string param2)
+    public bool Run(IEnumerable<IUseCaseParameter> parameter)
     {
-      throw new NotImplementedException();
-    }
+      var transactions = parameter.FirstOrDefault(x => x.ParameterName == "Name").ToList<Transaction>().ToArray();
 
-    public bool Run(Transaction[][] transactions)
-    {
       for (int i = 0; i < transactions.Length; i++)
       {
         for (int j = 0; j < transactions[i].Length; j++)

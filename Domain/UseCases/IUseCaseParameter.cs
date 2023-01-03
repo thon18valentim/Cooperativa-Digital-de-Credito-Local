@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace AdaCredit.Domain.UseCases
 {
-  public interface IUseCase
+  public interface IUseCaseParameter
   {
-    public bool Run(IEnumerable<IUseCaseParameter> parameters);
+    object ParameterValue { get; set; }
+    string ParameterName { get; set; }
   }
 }
