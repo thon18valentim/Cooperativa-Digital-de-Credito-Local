@@ -37,7 +37,7 @@ namespace AdaCredit.Infra.Repositories
     }
 
     public static List<Employee> Get()
-      => RegisteredEmployees.ToList();
+      => registeredEmployees;
 
     private static void Load()
     {
@@ -65,7 +65,7 @@ namespace AdaCredit.Infra.Repositories
         using var csv = new CsvReader(reader, config);
         csv.Context.RegisterClassMap<EmployeeMap>();
         var records = csv.GetRecords<Employee>().ToList();
-        RegisteredEmployees = records;
+        registeredEmployees = records;
       }
       catch (Exception ex)
       {
@@ -91,7 +91,7 @@ namespace AdaCredit.Infra.Repositories
         using (var csv = new CsvWriter(writer, config))
         {
           csv.Context.RegisterClassMap<EmployeeMap>();
-          csv.WriteRecords(RegisteredEmployees);
+          csv.WriteRecords(registeredEmployees);
           csv.Flush();
         }
 
@@ -118,7 +118,7 @@ namespace AdaCredit.Infra.Repositories
 
     public static int CountDisable()
     {
-      return RegisteredEmployees.Count(e => !e.IsActive);
+      return registeredEmployees.Count(e => !e.IsActive);
     } 
   }
 }

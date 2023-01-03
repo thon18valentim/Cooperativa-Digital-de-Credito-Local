@@ -36,8 +36,12 @@ namespace AdaCredit.Views
         }
         else
         {
-          var tuple = new StringUseCaseParameter[] { ("UserName", userName), ("Password", password) };
-          isLogged = new DoLogin().Run(tuple);
+          //var tuple = new StringUseCaseParameter[] { ("UserName", userName), ("Password", password) };
+          isLogged = new DoLogin().Run(
+            new StringUseCaseParameter[] { 
+              new(){ ParameterName = "UserName", ParameterValue = userName },
+              new(){ ParameterName = "Password", ParameterValue = password }
+            });
         }
         
         if (!isLogged)

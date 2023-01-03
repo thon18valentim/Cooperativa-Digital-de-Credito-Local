@@ -36,8 +36,12 @@ namespace AdaCredit.Views
         Console.WriteLine($"Senha antiga de {employee}: ");
         var oldPassword = Util.ReadLinePassword();
 
-        var tuple1 = new StringUseCaseParameter[] { ("UserName", employee), ("OldPassword", oldPassword) };
-        var result = new DoPassVerification().Run(tuple1);
+        //var tuple1 = new StringUseCaseParameter[] { ("UserName", employee), ("OldPassword", oldPassword) };
+        var result = new DoPassVerification().Run(
+            new StringUseCaseParameter[] {
+              new(){ ParameterName = "UserName", ParameterValue = employee },
+              new(){ ParameterName = "OldPassword", ParameterValue = oldPassword },
+            });
 
         if (!result)
         {
@@ -50,8 +54,12 @@ namespace AdaCredit.Views
         Console.WriteLine($"\nEntre com a nova senha de {employee}: ");
         var newPassword = Util.ReadLinePassword();
 
-        var tuple2 = new StringUseCaseParameter[] { ("UserName", employee), ("NewPassword", newPassword) };
-        changed = new DoPassChange().Run(tuple2);
+        //var tuple2 = new StringUseCaseParameter[] { ("UserName", employee), ("NewPassword", newPassword) };
+        changed = new DoPassChange().Run(
+            new StringUseCaseParameter[] {
+              new(){ ParameterName = "UserName", ParameterValue = employee },
+              new(){ ParameterName = "NewPassword", ParameterValue = newPassword },
+            });
 
       } while (!changed);
 
@@ -64,7 +72,7 @@ namespace AdaCredit.Views
 
     public static void ShowDisableEmployee()
     {
-      var list = EmployeeRepository.Get().FindAll(e => e.IsActive).ToList();
+      var list = EmployeeRepository.GetActive();
       var options = list.Select(e => e.UserName).ToList();
       options.Add("Voltar");
 
@@ -83,8 +91,11 @@ namespace AdaCredit.Views
         if (string.Equals(employee, "Voltar"))
           break;
 
-        var tuple = new StringUseCaseParameter[] { ("UserName", employee) };
-        disabled = new DoDisableEmployee().Run(tuple);
+        //var tuple = new StringUseCaseParameter[] { ("UserName", employee) };
+        disabled = new DoDisableEmployee().Run(
+            new StringUseCaseParameter[] {
+              new(){ ParameterName = "UserName", ParameterValue = employee },
+            });
 
         if (!disabled)
         {
@@ -102,7 +113,7 @@ namespace AdaCredit.Views
 
     public static void ShowDisableClient()
     {
-      var list = ClientRepository.RegisteredClients.FindAll(c => c.IsActive).ToList();
+      var list = ClientRepository.GetActive();
       var options = list.Select(c => $"{c.Name} - {c.Cpf}").ToList();
       options.Add("Voltar");
 
@@ -121,8 +132,11 @@ namespace AdaCredit.Views
         if (string.Equals(client, "Voltar"))
           break;
 
-        var tuple = new StringUseCaseParameter[] { ("Cpf", client.GetCpf()) };
-        disabled = new DoDisableClient().Run(tuple);
+        //var tuple = new StringUseCaseParameter[] { ("Cpf", client.GetCpf()) };
+        disabled = new DoDisableClient().Run(
+            new StringUseCaseParameter[] {
+              new(){ ParameterName = "Cpf", ParameterValue = client.GetCpf() },
+            });
 
       } while (!disabled);
 
@@ -291,8 +305,14 @@ namespace AdaCredit.Views
           _ => false
         };
 
-        var tuple = new StringUseCaseParameter[] { ("Name", fullName), ("Cpf", cpf), ("OldCpf", client.Cpf), ("ActiveConfigSelected", activeConfigSelected.ToString()) };
-        completed = new DoEditClient().Run(tuple);
+        //var tuple = new StringUseCaseParameter[] { ("Name", fullName), ("Cpf", cpf), ("OldCpf", client.Cpf), ("ActiveConfigSelected", activeConfigSelected.ToString()) };
+        completed = new DoEditClient().Run(
+            new StringUseCaseParameter[] {
+              new(){ ParameterName = "Name", ParameterValue = fullName },
+              new(){ ParameterName = "Cpf", ParameterValue = cpf },
+              new(){ ParameterName = "OldCpf", ParameterValue = client.Cpf },
+              new(){ ParameterName = "ActiveConfigSelected", ParameterValue = activeConfigSelected.ToString() },
+            });
 
       } while(!completed);
 

@@ -217,7 +217,8 @@ namespace AdaCredit.Utils
 
     public static List<T> ToList<T>(this IUseCaseParameter parameter)
     {
-      return (List<T>)parameter.ParameterValue;
+      //return (List<T>)parameter.ParameterValue;
+      return new List<T>();
     }
   }
 }

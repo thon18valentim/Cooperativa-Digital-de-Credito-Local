@@ -14,77 +14,80 @@ namespace AdaCredit.Domain.UseCases
   {
     private List<Transaction> completedTransactions = new();
     private List<Transaction> failedTransactions = new();
-    private List<TransactionError> failedErrors = new();
+
     public bool Run(IEnumerable<IUseCaseParameter> parameter)
     {
-      var transactions = parameter.FirstOrDefault(x => x.ParameterName == "Name").ToList<Transaction>().ToArray();
+      var transactions = parameter.FirstOrDefault(x => x.ParameterName == "Transactions").ToList<Transaction>();
 
-      for (int i = 0; i < transactions.Length; i++)
+      foreach (var transaction in transactions)
       {
-        for (int j = 0; j < transactions[i].Length; j++)
+        var sameBank = true;
+        var fromHome = false;
+
+        // verificando se contas são iguais
+        if (string.Equals(transaction.OriginBankCode, transaction.DestinationBankCode))
         {
-          var sameBank = true;
-          var fromHome = false;
-
-          // verificando se contas são iguais
-          if (string.Equals(transactions[i][j].OriginBankCode, transactions[i][j].DestinationBankCode))
+          if (string.Equals(transaction.OriginBankAccount, transaction.DestinationBankAccount))
           {
-            if (string.Equals(transactions[i][j].OriginBankAccount, transactions[i][j].DestinationBankAccount))
-            {
-              failedTransactions.Add(transactions[i][j]);
-              failedErrors.Add(new("Erro, as contas da transação se referem ao mesmo registro"));
-              continue;
-            }
-          }
-
-          // verificando se contas são do mesmo banco
-          if (!string.Equals(transactions[i][j].OriginBankCode, transactions[i][j].DestinationBankCode))
-          {
-            sameBank = false;
-            if (transactions[i][j].Type == TransactionType.TEF)
-            {
-              failedTransactions.Add(transactions[i][j]);
-              failedErrors.Add(new("Transações de tipo TEF devem ser entre clientes do mesmo banco"));
-              continue;
-            }
-          }
-
-          // verificando existencia da conta e se estão ativas
-          if (string.Equals(transactions[i][j].OriginBankCode, "777"))
-          {
-            if (!AccountAvailable(transactions[i][j].OriginBankAccount))
-            {
-              failedTransactions.Add(transactions[i][j]);
-              failedErrors.Add(new("Conta de origem não existe ou está desativada"));
-              continue;
-            }
-            fromHome = true;
-          }
-          if (string.Equals(transactions[i][j].DestinationBankAccount, "777"))
-          {
-            if (!AccountAvailable(transactions[i][j].DestinationBankAccount))
-            {
-              failedTransactions.Add(transactions[i][j]);
-              failedErrors.Add(new("Conta de origem não existe ou está desativada"));
-              continue;
-            }
-          }
-
-          if (!ApplyTransaction(transactions[i][j], fromHome, sameBank))
-          {
-            failedTransactions.Add(transactions[i][j]);
-            failedErrors.Add(new("Saldo insuficiente"));
+            transaction.ErrorMessage = "Erro, as contas da transação se referem ao mesmo registro";
+            transaction.ErrorDate = DateTime.Now;
+            failedTransactions.Add(transaction);
             continue;
           }
-
-          completedTransactions.Add(transactions[i][j]);
         }
 
-        SaveCompletedTransactions();
-        SaveFailureTransactions();
+        // verificando se contas são do mesmo banco
+        if (!string.Equals(transaction.OriginBankCode, transaction.DestinationBankCode))
+        {
+          sameBank = false;
+          if (transaction.Type == TransactionType.TEF)
+          {
+            transaction.ErrorMessage = "Transações de tipo TEF devem ser entre clientes do mesmo banco";
+            transaction.ErrorDate = DateTime.Now;
+            failedTransactions.Add(transaction);
+            continue;
+          }
+        }
+
+        // verificando existencia da conta e se estão ativas
+        if (string.Equals(transaction.OriginBankCode, "777"))
+        {
+          if (!AccountAvailable(transaction.OriginBankAccount))
+          {
+            transaction.ErrorMessage = "Conta de origem não existe ou está desativada";
+            transaction.ErrorDate = DateTime.Now;
+            failedTransactions.Add(transaction);
+            continue;
+          }
+          fromHome = true;
+        }
+        if (string.Equals(transaction.DestinationBankAccount, "777"))
+        {
+          if (!AccountAvailable(transaction.DestinationBankAccount))
+          {
+            transaction.ErrorMessage = "Conta de destino não existe ou está desativada";
+            transaction.ErrorDate = DateTime.Now;
+            failedTransactions.Add(transaction);
+            continue;
+          }
+        }
+
+        // aplicando transação
+        if (!ApplyTransaction(transaction, fromHome, sameBank))
+        {
+          transaction.ErrorMessage = "Saldo insuficiente";
+          transaction.ErrorDate = DateTime.Now;
+          failedTransactions.Add(transaction);
+          continue;
+        }
+
+        completedTransactions.Add(transaction);
       }
 
-      return false;
+      SaveCompletedTransactions();
+      SaveFailureTransactions();
+
+      return true;
     }
 
     private decimal CalculateTEDRate(decimal transactionValue)
@@ -203,9 +206,13 @@ namespace AdaCredit.Domain.UseCases
       if (completedTransactions.Count == 0)
         return;
 
-      TransactionsRepository.SaveCompleted(completedTransactions, completedTransactions[0].BankName);
+      var groups = 
+        completedTransactions.GroupBy(t => new { t.BankName, t.Date});
 
-      completedTransactions = new();
+      foreach (var group in groups)
+      {
+        TransactionsRepository.SaveCompleted(group.ToList());
+      }
     }
 
     private void SaveFailureTransactions()
@@ -213,9 +220,13 @@ namespace AdaCredit.Domain.UseCases
       if (failedTransactions.Count == 0)
         return;
 
-      TransactionsRepository.SaveFailure(failedTransactions, failedErrors, failedTransactions[0].BankName);
+      var groups = 
+        failedTransactions.GroupBy(t => new { t.BankName, t.Date });
 
-      failedTransactions = new();
+      foreach (var group in groups)
+      {
+        TransactionsRepository.SaveFailure(group.ToList());
+      }
     }
   }
 }

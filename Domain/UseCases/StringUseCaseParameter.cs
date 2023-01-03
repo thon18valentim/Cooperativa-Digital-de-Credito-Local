@@ -11,8 +11,8 @@ namespace AdaCredit.Domain.UseCases
     public object ParameterValue { get => (string)ParameterValue; set => ParameterValue = value; }
     public string ParameterName { get; set; } = string.Empty;
 
-    public static implicit operator StringUseCaseParameter(string s) => new StringUseCaseParameter() { ParameterValue = s };
+    //public static implicit operator StringUseCaseParameter(string s) => new() { ParameterValue = s };
 
-    public static implicit operator StringUseCaseParameter((string name, string value) tuple) => new() { ParameterValue = tuple.value, ParameterName = tuple.name };
+    //public static implicit operator StringUseCaseParameter((string name, string value) tuple) => new() { ParameterValue = tuple.value, ParameterName = tuple.name };
   }
 }

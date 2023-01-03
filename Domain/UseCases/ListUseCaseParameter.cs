@@ -10,7 +10,8 @@ namespace AdaCredit.Domain.UseCases
   {
     public object ParameterValue { get => (List<T>)ParameterValue; set => ParameterValue = value; }
     public string ParameterName { get; set; } = string.Empty;
+
     public static implicit operator ListUseCaseParameter<T>(List<T> list) => new() { ParameterValue = list };
-    public static implicit operator ListUseCaseParameter<T>((string name, string value) tuple) => new() { ParameterValue = tuple.value, ParameterName = tuple.name };
+    public static implicit operator ListUseCaseParameter<T>((string name, List<T> value) tuple) => new() { ParameterValue = tuple.value, ParameterName = tuple.name };
   }
 }

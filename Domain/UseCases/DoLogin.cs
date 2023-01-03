@@ -29,8 +29,7 @@ namespace AdaCredit.Domain.UseCases
       if (hashPassword == employee.PasswordHash)
       {
         employee.LastLogin = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
-        EmployeeRepository.Save();
-        return true;
+        return EmployeeRepository.Save();
       }
 
       return false;

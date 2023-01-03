@@ -16,10 +16,10 @@ namespace AdaCredit.Infra.Repositories
   {
     private static List<Account> registeredAccounts;
 
-    public static List<Account> RegisteredAccounts
+    public static IEnumerable<Account> RegisteredAccounts
     {
       get => registeredAccounts;
-      private set => registeredAccounts = value;
+      private set => registeredAccounts = (List<Account>)value;
     }
 
     private static readonly string databasePath;
@@ -35,7 +35,7 @@ namespace AdaCredit.Infra.Repositories
       var fileName = "adaCredit_account_database.csv";
       var filePath = Path.Combine(databasePath, fileName);
 
-      RegisteredAccounts = new();
+      registeredAccounts = new();
 
       if (!File.Exists(filePath))
       {
@@ -56,12 +56,12 @@ namespace AdaCredit.Infra.Repositories
         using var csv = new CsvReader(reader, config);
         csv.Context.RegisterClassMap<AccountMap>();
         var records = csv.GetRecords<Account>().ToList();
-        RegisteredAccounts = records;
+        registeredAccounts = records;
       }
       catch (Exception ex)
       {
         Console.WriteLine($"{ex.Message} ao ler arquivo {fileName}");
-        RegisteredAccounts = new();
+        registeredAccounts = new();
       }
     }
 
@@ -82,7 +82,7 @@ namespace AdaCredit.Infra.Repositories
         using (var csv = new CsvWriter(writer, config))
         {
           csv.Context.RegisterClassMap<AccountMap>();
-          csv.WriteRecords(RegisteredAccounts);
+          csv.WriteRecords(registeredAccounts);
           csv.Flush();
         }
 
@@ -96,26 +96,26 @@ namespace AdaCredit.Infra.Repositories
     }
 
     public static void Add(Account account)
-      => RegisteredAccounts.Add(account);
+      => registeredAccounts.Add(account);
 
     public static bool Exists(string number)
-      => RegisteredAccounts.Find(a => a.Number.Replace("-", "") == number.Replace("-", "")) != null;
+      => registeredAccounts.Find(a => a.Number.Replace("-", "") == number.Replace("-", "")) != null;
 
     public static Account? Find(string number)
-      => RegisteredAccounts.Find(a => a.Number.Replace("-", "") == number.Replace("-", ""));
+      => registeredAccounts.Find(a => a.Number.Replace("-", "") == number.Replace("-", ""));
 
     public static bool IsEmpty()
-      => RegisteredAccounts.Count == 0;
+      => registeredAccounts.Count == 0;
 
     public static int GetNextId()
     {
-      if (RegisteredAccounts.Count == 0)
+      if (registeredAccounts.Count == 0)
         return 1;
 
-      return RegisteredAccounts[RegisteredAccounts.Count - 1].Id + 1;
+      return registeredAccounts[registeredAccounts.Count - 1].Id + 1;
     }
 
     public static Account? GetAccount(int id)
-      => RegisteredAccounts.FirstOrDefault(x => x.Id == id);
+      => registeredAccounts.FirstOrDefault(x => x.Id == id);
   }
 }

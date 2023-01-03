@@ -24,36 +24,34 @@ namespace AdaCredit.Views
       table.AddColumn("Tipo (Sentido)"); // DOC, TED, TEF (0 - Débito/Saída, 1 - Crédito/Entrada)
       table.AddColumn("Valor");
 
-      Transaction[][]? transactions = TransactionsRepository.LoadPending();
+      List<Transaction> transactions = TransactionsRepository.LoadPending();
 
-      if (transactions == default || transactions.Length == 0)
+      if (transactions == default || transactions.Count == 0)
       {
         Console.WriteLine("Nenhuma transação pendente encontrada\n");
       }
       else
       {
-        for (int i = 0; i < transactions.Length; i++)
+        foreach (Transaction transaction in transactions)
         {
-          for (int j = 0; j < transactions[i].Length; j++)
+          var entry = transaction.Entry switch
           {
-            var entry = transactions[i][j].Entry switch
-            {
-              0 => "Débito",
-              _ => "Crédito"
-            };
+            0 => "Débito",
+            _ => "Crédito"
+          };
 
-            table.AddRow(
-              $"{transactions[i][j].OriginBankCode} ({transactions[i][j].OriginBankAgency}) - {transactions[i][j].OriginBankAccount}",
-              $"{transactions[i][j].DestinationBankCode} ({transactions[i][j].DestinationBankAgency}) - {transactions[i][j].DestinationBankAccount}",
-              $"{transactions[i][j].Type} ({entry})",
-              string.Format("{0:C}", transactions[i][j].Value)
-              );
-          }
+          table.AddRow(
+            $"{transaction.OriginBankCode} ({transaction.OriginBankAgency}) - {transaction.OriginBankAccount}",
+            $"{transaction.DestinationBankCode} ({transaction.DestinationBankAgency}) - {transaction.DestinationBankAccount}",
+            $"{transaction.Type} ({entry})",
+            string.Format("{0:C}", transaction.Value)
+            );
         }
 
         AnsiConsole.Write(table);
 
-        //new DoProcessTransactions().Run(transactions);
+        var tuple = new ListUseCaseParameter<Transaction>[] { ("Transactions", transactions) };
+        new DoProcessTransactions().Run(tuple);
 
         Console.WriteLine("Processamento de transações concluído!\n");
       }

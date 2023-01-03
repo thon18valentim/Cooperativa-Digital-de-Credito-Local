@@ -16,10 +16,10 @@ namespace AdaCredit.Infra.Repositories
   {
     private static List<Client> registeredClients;
 
-    public static List<Client> RegisteredClients
+    public static IEnumerable<Client> RegisteredClients
     {
       get => registeredClients;
-      private set => registeredClients = value;
+      private set => registeredClients = (List<Client>)value;
     }
 
     private static readonly string  databasePath;
@@ -30,12 +30,15 @@ namespace AdaCredit.Infra.Repositories
         Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName;
     }
 
+    public static List<Client> Get()
+      => registeredClients;
+
     public static void Load()
     {
       var fileName = "adaCredit_client_database.csv";
       var filePath = Path.Combine(databasePath, fileName);
 
-      RegisteredClients = new();
+      registeredClients = new();
 
       if (!File.Exists(filePath))
       {
@@ -56,12 +59,12 @@ namespace AdaCredit.Infra.Repositories
         using var csv = new CsvReader(reader, config);
         csv.Context.RegisterClassMap<ClientMap>();
         var records = csv.GetRecords<Client>().ToList();
-        RegisteredClients = records;
+        registeredClients = records;
       }
       catch (Exception ex)
       {
         Console.WriteLine($"{ex.Message} ao ler arquivo {fileName}");
-        RegisteredClients = new();
+        registeredClients = new();
       }
     }
 
@@ -82,7 +85,7 @@ namespace AdaCredit.Infra.Repositories
         using (var csv = new CsvWriter(writer, config))
         {
           csv.Context.RegisterClassMap<ClientMap>();
-          csv.WriteRecords(RegisteredClients);
+          csv.WriteRecords(registeredClients);
           csv.Flush();
         }
 
@@ -96,10 +99,10 @@ namespace AdaCredit.Infra.Repositories
     }
 
     public static bool IsEmpty()
-      => RegisteredClients.Count == 0;
+      => registeredClients.Count == 0;
 
     public static void Add(Client client)
-      => RegisteredClients.Add(client);
+      => registeredClients.Add(client);
 
     public static Client? Find(string cpf)
       => RegisteredClients.FirstOrDefault(c => string.Equals(c.Cpf, cpf));
@@ -116,9 +119,9 @@ namespace AdaCredit.Infra.Repositories
     }
 
     public static List<Client> GetActive()
-      => RegisteredClients.FindAll(c => c.IsActive);
+      => registeredClients.FindAll(c => c.IsActive);
 
     public static List<Client> GetDisable()
-      => RegisteredClients.FindAll(c => !c.IsActive);
+      => registeredClients.FindAll(c => !c.IsActive);
   }
 }
