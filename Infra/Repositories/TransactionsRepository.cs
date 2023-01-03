@@ -17,13 +17,7 @@ namespace AdaCredit.Infra.Repositories
     private static string pendingPath;
     private static string completedPath;
     private static string failedPath;
-
-    static TransactionsRepository()
-    {
-      Setup();
-    }
-
-    private static void Setup()
+    public static void Setup()
     {
       var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 

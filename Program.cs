@@ -10,6 +10,7 @@ namespace AdaCredit
   {
     static void Main()
     {
+      TransactionsRepository.Setup();
       ClientRepository.Load();
       AccountRepository.Load();
 
