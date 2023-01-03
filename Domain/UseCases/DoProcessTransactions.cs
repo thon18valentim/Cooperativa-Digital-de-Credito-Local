@@ -61,7 +61,7 @@ namespace AdaCredit.Domain.UseCases
           }
           fromHome = true;
         }
-        if (string.Equals(transaction.DestinationBankAccount, "777"))
+        if (string.Equals(transaction.DestinationBankCode, "777"))
         {
           if (!AccountAvailable(transaction.DestinationBankAccount))
           {

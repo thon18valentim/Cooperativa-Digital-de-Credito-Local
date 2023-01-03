@@ -8,7 +8,8 @@ namespace AdaCredit.Domain.UseCases
 {
   public class StringUseCaseParameter : IUseCaseParameter
   {
-    public object ParameterValue { get => (string)ParameterValue; set => ParameterValue = value; }
+    //public object ParameterValue { get => (string)ParameterValue; set => ParameterValue = value; }
+    public object ParameterValue { get; set; }
     public string ParameterName { get; set; } = string.Empty;
 
     //public static implicit operator StringUseCaseParameter(string s) => new() { ParameterValue = s };
