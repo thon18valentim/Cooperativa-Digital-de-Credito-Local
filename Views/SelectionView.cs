@@ -18,7 +18,7 @@ namespace AdaCredit.Views
       var options = EmployeeRepository.RegisteredEmployees.Select(e => e.UserName).ToList();
       options.Add("Voltar");
 
-      var employee = "um Funcionário";
+      var employee = string.Empty;
 
       bool changed = false;
 
@@ -26,17 +26,15 @@ namespace AdaCredit.Views
       {
         Console.Clear();
 
-        Console.WriteLine($"| Alterar senha de {employee} |");
+        AnsiConsole.MarkupLine("── [darkorange]Alterar senha de Funcionário[/] ───────────────────────────────────────────────");
 
-        employee = AnsiConsole.Prompt(Util.CreateSelectionList("\nSelecione um funcionário listado abaixo:", options));
+        employee = AnsiConsole.Prompt(Util.CreateSelectionList("Selecione um [blue]funcionário[/] listado abaixo:", options));
 
         if (string.Equals(employee, "Voltar"))
           break;
 
-        Console.WriteLine($"Senha antiga de {employee}: ");
-        var oldPassword = Util.ReadLinePassword();
+        var oldPassword = AnsiConsole.Ask<string>($"Entre com a senha atual de [darkorange]{employee}[/]:");
 
-        //var tuple1 = new StringUseCaseParameter[] { ("UserName", employee), ("OldPassword", oldPassword) };
         var result = new DoPassVerification().Run(
             new StringUseCaseParameter[] {
               new(){ ParameterName = "UserName", ParameterValue = employee },
@@ -45,16 +43,14 @@ namespace AdaCredit.Views
 
         if (!result)
         {
-          Console.WriteLine("Senha incorreta! Tente novamente");
+          Console.WriteLine("\n");
+          AnsiConsole.Write(new Markup("[bold red]Senha incorreta, tente novamente![/]"));
           Thread.Sleep(2500);
-          Console.Clear();
           continue;
         }
 
-        Console.WriteLine($"\nEntre com a nova senha de {employee}: ");
-        var newPassword = Util.ReadLinePassword();
+        var newPassword = AnsiConsole.Ask<string>($"Entre com a nova senha de [darkorange]{employee}[/]:");
 
-        //var tuple2 = new StringUseCaseParameter[] { ("UserName", employee), ("NewPassword", newPassword) };
         changed = new DoPassChange().Run(
             new StringUseCaseParameter[] {
               new(){ ParameterName = "UserName", ParameterValue = employee },
@@ -65,7 +61,8 @@ namespace AdaCredit.Views
 
       if (changed)
       {
-        Console.WriteLine($"\nSenha de {employee} alterada com sucesso!");
+        Console.WriteLine("\n");
+        AnsiConsole.Write(new Markup($"[bold green]Senha de {employee} alterada com sucesso![/]"));
         Thread.Sleep(2000);
       }     
     }
@@ -76,7 +73,7 @@ namespace AdaCredit.Views
       var options = list.Select(e => e.UserName).ToList();
       options.Add("Voltar");
 
-      var employee = "um Funcionário";
+      var employee = string.Empty;
 
       bool disabled = false;
 
@@ -84,14 +81,13 @@ namespace AdaCredit.Views
       {
         Console.Clear();
 
-        Console.WriteLine($"| Desativar conta de {employee} |");
+        AnsiConsole.MarkupLine("── [darkorange]Desativar conta de Funcionário[/] ─────────────────────────────────────────────");
 
-        employee = AnsiConsole.Prompt(Util.CreateSelectionList("\nSelecione um funcionário listado abaixo:", options));
+        employee = AnsiConsole.Prompt(Util.CreateSelectionList("Selecione um [blue]funcionário[/] listado abaixo:", options));
 
         if (string.Equals(employee, "Voltar"))
           break;
 
-        //var tuple = new StringUseCaseParameter[] { ("UserName", employee) };
         disabled = new DoDisableEmployee().Run(
             new StringUseCaseParameter[] {
               new(){ ParameterName = "UserName", ParameterValue = employee },
@@ -99,14 +95,16 @@ namespace AdaCredit.Views
 
         if (!disabled)
         {
-          Console.WriteLine("\nFalha ao desativar funcionário. Deve haver pelo menos um funcionário ativo no sistema");
+          Console.WriteLine("\n");
+          AnsiConsole.Write(new Markup("[bold red]Falha ao desativar funcionário. Deve haver pelo menos um funcionário ativo no sistema.[/]"));
         }
 
       } while (!disabled);
 
       if (disabled)
       {
-        Console.WriteLine($"\nFuncionário {employee} desativado com sucesso!");
+        Console.WriteLine("\n");
+        AnsiConsole.Write(new Markup($"[bold green]Funcionário {employee} desativado com sucesso![/]"));
         Thread.Sleep(2000);
       }
     }
@@ -117,7 +115,7 @@ namespace AdaCredit.Views
       var options = list.Select(c => $"{c.Name} - {c.Cpf}").ToList();
       options.Add("Voltar");
 
-      var client = "um Cliente";
+      var client = string.Empty;
 
       bool disabled = false;
 
@@ -125,14 +123,13 @@ namespace AdaCredit.Views
       {
         Console.Clear();
 
-        Console.WriteLine($"| Desativar conta de {client} |");
+        AnsiConsole.MarkupLine("── [darkorange]Desativar conta de Cliente[/] ─────────────────────────────────────────────────");
 
-        client = AnsiConsole.Prompt(Util.CreateSelectionList("\nSelecione um cliente listado abaixo:", options));
+        client = AnsiConsole.Prompt(Util.CreateSelectionList("Selecione um [blue]cliente[/] listado abaixo:", options));
 
         if (string.Equals(client, "Voltar"))
           break;
 
-        //var tuple = new StringUseCaseParameter[] { ("Cpf", client.GetCpf()) };
         disabled = new DoDisableClient().Run(
             new StringUseCaseParameter[] {
               new(){ ParameterName = "Cpf", ParameterValue = client.GetCpf() },
@@ -142,7 +139,8 @@ namespace AdaCredit.Views
 
       if (disabled)
       {
-        Console.WriteLine($"\nCliente {client} desativado com sucesso!");
+        Console.WriteLine("\n");
+        AnsiConsole.Write(new Markup($"[bold green]Cliente {client} desativado com sucesso![/]"));
         Thread.Sleep(2000);
       }
     }
@@ -152,7 +150,7 @@ namespace AdaCredit.Views
       var options = ClientRepository.RegisteredClients.Select(c => $"{c.Name} - {c.Cpf}").ToList();
       options.Add("Voltar");
 
-      var client = "um Cliente";
+      var client = string.Empty;
 
       Client? clientObj = new();
 
@@ -162,9 +160,9 @@ namespace AdaCredit.Views
       {
         Console.Clear();
 
-        Console.WriteLine($"| Desativar conta de {client} |");
+        AnsiConsole.MarkupLine("── [darkorange]Consultar dados de Cliente[/] ─────────────────────────────────────────────────");
 
-        client = AnsiConsole.Prompt(Util.CreateSelectionList("\nSelecione um cliente listado abaixo:", options));
+        client = AnsiConsole.Prompt(Util.CreateSelectionList("Selecione um [blue]cliente[/] listado abaixo:", options));
 
         if (string.Equals(client, "Voltar"))
           break;
@@ -192,13 +190,13 @@ namespace AdaCredit.Views
 
       Console.Clear();
 
-      var table = new Table();
+      var table = new Table().Format();
 
       table.AddColumn("Nome");
-      table.AddColumn("Cpf");
-      table.AddColumn("Conta");
-      table.AddColumn("Agência");
-      table.AddColumn("Saldo");
+      table.AddColumn("[grey58]Cpf[/]");
+      table.AddColumn("[lightslateblue]Conta[/]");
+      table.AddColumn("[lightslateblue]Agência[/]");
+      table.AddColumn("[green]Saldo[/]");
 
       var account = AccountRepository.GetAccount(client.ClientAccountId);
 
@@ -207,14 +205,15 @@ namespace AdaCredit.Views
 
       table.AddRow(
         client.Name, 
-        client.Cpf,
-        account.Number,
-        account.AgencyNumber,
-        string.Format("{0:C}", account.Balance));
+        $"[grey70]{client.Cpf}[/]",
+        $"[skyblue2]{account.Number}[/]",
+        $"[skyblue2]{account.AgencyNumber}[/]",
+        $"[springgreen4]{string.Format("{0:C}", account.Balance)}[/]");
 
+      AnsiConsole.MarkupLine("───────────────────────────────────────────── [darkorange]Infos doo Cliente[/] ─────────────────────────────────────────────");
       AnsiConsole.Write(table);
 
-      Console.WriteLine("Pressione ENTER para voltar");
+      AnsiConsole.MarkupLine("Pressione [darkorange]ENTER[/] para voltar");
 
       ConsoleKeyInfo info = Console.ReadKey(true);
       while (info.Key != ConsoleKey.Enter) { info = Console.ReadKey(true); }
@@ -225,7 +224,7 @@ namespace AdaCredit.Views
       var options = ClientRepository.RegisteredClients.Select(c => $"{c.Name} - {c.Cpf}").ToList();
       options.Add("Voltar");
 
-      var client = "um Cliente";
+      var client = string.Empty;
 
       Client? clientObj = new();
 
@@ -235,9 +234,9 @@ namespace AdaCredit.Views
       {
         Console.Clear();
 
-        Console.WriteLine($"| Editar cadastro de {client} |");
+        AnsiConsole.MarkupLine("── [darkorange]Editar cadastro de Cliente[/] ─────────────────────────────────────────────────");
 
-        client = AnsiConsole.Prompt(Util.CreateSelectionList("\nSelecione um cliente listado abaixo:", options));
+        client = AnsiConsole.Prompt(Util.CreateSelectionList("Selecione um [blue]cliente[/] listado abaixo:", options));
 
         if (string.Equals(client, "Voltar"))
           break;
@@ -279,44 +278,51 @@ namespace AdaCredit.Views
         var table = new Table();
 
         table.AddColumn("Nome");
-        table.AddColumn("Cpf");
-        table.AddColumn("Conta");
+        table.AddColumn("[grey58]Cpf[/]");
+        table.AddColumn("[lightslateblue]Conta[/]");
 
         table.AddRow(
-        client.Name,
-        client.Cpf,
-        account.Number
+          client.Name,
+          $"[grey70]{client.Cpf}[/]",
+          $"[skyblue2]{account.Number}[/]"
         );
 
+        AnsiConsole.MarkupLine("────────────────────────────────────────────────── [darkorange]Cliente Infos[/] ──────────────────────────────────────────────────");
         AnsiConsole.Write(table);
 
-        Console.WriteLine("| Entre com os novos dados do cliente abaixo |");
+        Console.WriteLine("\n");
+        AnsiConsole.MarkupLine("── [darkorange]Novos dados do cliente[/] ──────────────────────────────────────────────────────────");
 
-        Console.WriteLine("\nNome completo:");
-        var fullName = Console.ReadLine();
+        var fullName = AnsiConsole.Ask<string>("Entre com o seu [bold blue]nome completo[/]:");
+        var cpf = AnsiConsole.Ask<string>("Entre com o seu [bold blue]cpf[/]:");
+        var phone = AnsiConsole.Ask<string>("Entre com o seu [bold blue]telefone[/]:");
+        var country = AnsiConsole.Ask<string>("Entre com o seu [bold blue]país de residência[/]:");
+        var city = AnsiConsole.Ask<string>("Entre com a sua [bold blue]cidade de residência[/]:");
+        var streetAddress = AnsiConsole.Ask<string>("Entre com o [bold blue]endereço de rua[/]:");
 
-        Console.WriteLine("Cpf:");
-        var cpf = Console.ReadLine();
-
-        var activeConfig = AnsiConsole.Prompt(Util.CreateSelectionList("\nAtive ou desative o cliente", enableOptions));
+        Console.WriteLine("\n");
+        var activeConfig = AnsiConsole.Prompt(Util.CreateSelectionList("[bold blue]Ative[/] ou [bold red]desative[/] o cliente", enableOptions));
         var activeConfigSelected = activeConfig switch
         {
           "Ativar" => true,
           _ => false
         };
 
-        //var tuple = new StringUseCaseParameter[] { ("Name", fullName), ("Cpf", cpf), ("OldCpf", client.Cpf), ("ActiveConfigSelected", activeConfigSelected.ToString()) };
         completed = new DoEditClient().Run(
             new StringUseCaseParameter[] {
               new(){ ParameterName = "Name", ParameterValue = fullName },
               new(){ ParameterName = "Cpf", ParameterValue = cpf },
               new(){ ParameterName = "OldCpf", ParameterValue = client.Cpf },
+              new(){ ParameterName = "Phone", ParameterValue = phone },
+              new(){ ParameterName = "Country", ParameterValue = country },
+              new(){ ParameterName = "City", ParameterValue = city },
+              new(){ ParameterName = "StreetAddress", ParameterValue = streetAddress },
               new(){ ParameterName = "ActiveConfigSelected", ParameterValue = activeConfigSelected.ToString() },
             });
 
       } while(!completed);
 
-      Console.WriteLine($"\nCliente atualizado com sucesso!");
+      AnsiConsole.WriteLine("[bold green]Cliente atualizado com sucesso![/]");
       Thread.Sleep(2500);
     }
   }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AdaCredit.Infra.Repositories;
 using AdaCredit.Utils;
 using AdaCredit.Domain.UseCases;
+using Spectre.Console;
 
 namespace AdaCredit.Views
 {
@@ -19,11 +20,9 @@ namespace AdaCredit.Views
       {
         Console.Clear();
 
-        Console.WriteLine("| Cadastrar novo Funcionário |");
-        Console.WriteLine("Senha do novo funcionário: ");
-        var password = Util.ReadLinePassword();
+        AnsiConsole.MarkupLine("── [darkorange]Cadastrar novo Funcionário[/] ─────────────────────────────────────────────────");
+        var password = AnsiConsole.Prompt(new TextPrompt<string>("Entre com a [darkorange]senha[/] do novo funcionário:").PromptStyle("red").Secret());
 
-        //var tuple = new StringUseCaseParameter[] { ("Password", password) };
         isRegistered = new DoCreateEmployee().Run(
             new StringUseCaseParameter[] {
               new(){ ParameterName = "Password", ParameterValue = password }
@@ -31,7 +30,7 @@ namespace AdaCredit.Views
 
       } while (!isRegistered);
 
-      Console.WriteLine("Funcionário cadastrado com sucesso!");
+      AnsiConsole.Write(new Markup("[bold green]Funcionário cadastrado com sucesso![/]"));
       Thread.Sleep(2000);
     }
   }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AdaCredit.Domain.Entities;
 using AdaCredit.Infra.Repositories;
+using AdaCredit.Utils;
 
 namespace AdaCredit.Views
 {
@@ -15,26 +16,31 @@ namespace AdaCredit.Views
     {
       Console.Clear();
 
-      var table = new Table();
+      var table = new Table().Format();
 
       table.AddColumn("Funcionários");
-      table.AddColumn("Último Login");
+      table.AddColumn("[deepskyblue1]Usuários[/]");
+      table.AddColumn("[grey58]Último Login[/]");
 
       var list = EmployeeRepository.GetActive();
 
+      AnsiConsole.MarkupLine("─────────────────────────────────────────────── [darkorange]Funcionários Ativos[/] ───────────────────────────────────────────────");
+
       if (list.Count == 0)
       {
-        Console.WriteLine("Nenhum funcionário ativo encontrado\n");
+        Console.WriteLine("\n");
+        AnsiConsole.Write(new Markup("[bold red]Nenhum funcionário ativo encontrado[/]"));
+        Console.WriteLine("\n");
       }
       else
       {
         foreach (Employee e in list)
-          table.AddRow(e.UserName, e.LastLogin);
+          table.AddRow($"{e.FirstName} {e.LastName}", $"[mediumturquoise]{e.UserName}[/]", $"[grey70]{e.LastLogin}[/]");
 
         AnsiConsole.Write(table);
       }
 
-      Console.WriteLine("Pressione ENTER para voltar");
+      AnsiConsole.MarkupLine("Pressione [darkorange]ENTER[/] para voltar");
 
       ConsoleKeyInfo info = Console.ReadKey(true);
       while (info.Key != ConsoleKey.Enter) { info = Console.ReadKey(true); }
@@ -44,17 +50,19 @@ namespace AdaCredit.Views
     {
       Console.Clear();
 
-      var table = new Table().Centered();
+      var table = new Table().Format();
 
       table.AddColumn("Clientes");
-      table.AddColumn("Contas");
-      table.AddColumn("Saldo");
+      table.AddColumn("[deepskyblue1]Contas[/]");
+      table.AddColumn("[green]Saldo (R$)[/]");
 
       var list = ClientRepository.GetActive();
 
       if (list.Count == 0)
       {
-        Console.WriteLine("Nenhum cliente ativo encontrado\n");
+        Console.WriteLine("\n");
+        AnsiConsole.Write(new Markup("[bold red]Nenhum cliente ativo encontrado[/]"));
+        Console.WriteLine("\n");
       }
       else
       {
@@ -65,10 +73,9 @@ namespace AdaCredit.Views
           if (account == null)
             account = new Account();
 
-          table.AddRow($"[bold white]{c.Name}[/]", account.Number, $"[bold green]{string.Format("{0:C}", account.Balance)}[/]");
+          table.AddRow(c.Name, $"[mediumturquoise]{account.Number}[/]", $"[springgreen4]{string.Format("{0:C}", account.Balance)}[/]");
         }
 
-        // 50
         AnsiConsole.MarkupLine("────────────────────────────────────────────────── [darkorange]Clientes Ativos[/] ──────────────────────────────────────────────────");
         AnsiConsole.Write(table);
       }
@@ -83,26 +90,29 @@ namespace AdaCredit.Views
     {
       Console.Clear();
 
-      var table = new Table();
+      var table = new Table().Format();
 
       table.AddColumn("Clientes");
-      table.AddColumn("Cpf");
+      table.AddColumn("[grey58]Cpf[/]");
 
       var list = ClientRepository.GetDisable();
 
       if (list.Count == 0)
       {
-        Console.WriteLine("Nenhum cliente inativo encontrado\n");
+        Console.WriteLine("\n");
+        AnsiConsole.Write(new Markup("[bold red]Nenhum cliente inativo encontrado![/]"));
+        Console.WriteLine("\n");
       }
       else
       {
         foreach (Client c in list)
-          table.AddRow(c.Name, c.Cpf);
+          table.AddRow(c.Name, $"[grey70]{c.Cpf}[/]");
 
+        AnsiConsole.MarkupLine("───────────────────────────────────────────── [darkorange]Clientes Desativados[/] ─────────────────────────────────────────────");
         AnsiConsole.Write(table);
       }
 
-      Console.WriteLine("Pressione ENTER para voltar");
+      AnsiConsole.MarkupLine("Pressione [darkorange]ENTER[/] para voltar");
 
       ConsoleKeyInfo info = Console.ReadKey(true);
       while (info.Key != ConsoleKey.Enter) { info = Console.ReadKey(true); }
@@ -112,18 +122,20 @@ namespace AdaCredit.Views
     {
       Console.Clear();
 
-      var table = new Table();
+      var table = new Table().Format();
 
       table.AddColumn("Banco de Origem & Conta");
       table.AddColumn("Banco de Destino & Conta");
-      table.AddColumn("Valor & Tipo");
-      table.AddColumn("Erro");
+      table.AddColumn("[green]Valor (R$)[/] & [grey58]Tipo[/]");
+      table.AddColumn("[red]Erro[/]");
 
       var transactions = TransactionsRepository.LoadFailed();
 
       if (transactions?.Length == 0)
       {
-        Console.WriteLine("Nenhuma transação com falha encontrada\n");
+        Console.WriteLine("\n");
+        AnsiConsole.Write(new Markup("[bold red]Nenhuma transação com falha encontrada[/]"));
+        Console.WriteLine("\n");
       }
       else
       {
@@ -138,15 +150,16 @@ namespace AdaCredit.Views
           table.AddRow(
             $"{transactions[i].OriginBankCode} ({transactions[i].OriginBankAgency}) - {transactions[i].OriginBankAccount}",
             $"{transactions[i].DestinationBankCode} ({transactions[i].DestinationBankAgency}) - {transactions[i].DestinationBankAccount}",
-            $"{string.Format("{0:C}", transactions[i].Value)} - {transactions[i].Type} ({entry})",
-            transactions[i].ErrorMessage
+            $"[springgreen4]{string.Format("{0:C}", transactions[i].Value)}[/] - [grey70]{transactions[i].Type} ({entry})[/]",
+            $"[maroon]{transactions[i].ErrorMessage}.[/]"
             );
         }
 
+        AnsiConsole.MarkupLine("─────────────────────────────────────────── [darkorange]Transações que falharam[/] ───────────────────────────────────────────");
         AnsiConsole.Write(table);
       }
 
-      Console.WriteLine("Pressione ENTER para voltar");
+      AnsiConsole.MarkupLine("Pressione [darkorange]ENTER[/] para voltar");
 
       ConsoleKeyInfo info = Console.ReadKey(true);
       while (info.Key != ConsoleKey.Enter) { info = Console.ReadKey(true); }

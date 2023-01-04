@@ -76,7 +76,7 @@ namespace AdaCredit.Utils
               .PageSize(10)
               .AddChoices(options);
 
-      selectionPrompt.HighlightStyle = new Style(Color.White);
+      selectionPrompt.HighlightStyle = new Style(Color.Orange1);
 
       return selectionPrompt;
     }
@@ -218,7 +218,14 @@ namespace AdaCredit.Utils
     public static List<T> ToList<T>(this IUseCaseParameter parameter)
     {
       return (List<T>)parameter.ParameterValue;
-      //return new List<T>();
+    }
+
+    public static Table Format(this Table table)
+    {
+      table.Centered();
+      table.Border(TableBorder.Rounded);
+
+      return table;
     }
   }
 }

@@ -74,7 +74,7 @@ namespace AdaCredit.Views
           Thread.Sleep(2000);
 
           ctx.Status("[bold blue]Finalizando preparativos[/]");
-          ctx.Spinner(Spinner.Known.Balloon);
+          ctx.Spinner(Spinner.Known.Star2);
           ctx.SpinnerStyle(Style.Parse("blue"));
         });
 

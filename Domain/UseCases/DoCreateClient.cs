@@ -26,6 +26,10 @@ namespace AdaCredit.Domain.UseCases
           .CustomInstantiator(f => new Client())
           .RuleFor(c => c.Gender, f => f.PickRandom<Gender>())
           .RuleFor(c => c.Name, f => $"{f.Name.FirstName()} {f.Name.LastName()}")
+          .RuleFor(c => c.Phone, f => f.Phone.PhoneNumber())
+          .RuleFor(c => c.Country, f => f.Address.Country())
+          .RuleFor(c => c.City, f => f.Address.City())
+          .RuleFor(c => c.StreetAddress, f => f.Address.StreetAddress())
           .FinishWith((f, c) => {
 
             var cpf = Util.GenerateCpf();
@@ -38,7 +42,6 @@ namespace AdaCredit.Domain.UseCases
 
           });
 
-        // conferindo se cliente é unico
         if (!ClientRepository.RegisteredClients.Any(c => c.Cpf == client.Cpf))
           IsUniqueCpf = true;
 

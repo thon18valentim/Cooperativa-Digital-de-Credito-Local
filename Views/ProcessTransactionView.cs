@@ -21,14 +21,15 @@ namespace AdaCredit.Views
 
       table.AddColumn("Banco de Origem & Conta"); // codigo (agencia) + conta
       table.AddColumn("Banco de Destino & Conta"); // codigo (agencia) + conta
-      table.AddColumn("Tipo (Sentido)"); // DOC, TED, TEF (0 - Débito/Saída, 1 - Crédito/Entrada)
-      table.AddColumn("Valor");
+      table.AddColumn("[grey58]Tipo (Sentido)[/]"); // DOC, TED, TEF (0 - Débito/Saída, 1 - Crédito/Entrada)
+      table.AddColumn("[green]Valor[/]");
 
       List<Transaction> transactions = TransactionsRepository.LoadPending();
 
       if (transactions == default || transactions.Count == 0)
       {
-        Console.WriteLine("Nenhuma transação pendente encontrada\n");
+        Console.WriteLine("\n");
+        AnsiConsole.Write(new Markup("[bold red]Nenhuma transação pendente encontrada[/]"));
       }
       else
       {
@@ -43,19 +44,21 @@ namespace AdaCredit.Views
           table.AddRow(
             $"{transaction.OriginBankCode} ({transaction.OriginBankAgency}) - {transaction.OriginBankAccount}",
             $"{transaction.DestinationBankCode} ({transaction.DestinationBankAgency}) - {transaction.DestinationBankAccount}",
-            $"{transaction.Type} ({entry})",
-            string.Format("{0:C}", transaction.Value)
+            $"[grey70]{transaction.Type} ({entry})[/]",
+            $"[springgreen4]{string.Format("{0:C}", transaction.Value)}[/]"
             );
         }
 
+        AnsiConsole.MarkupLine("─────────────────────────────────────── [darkorange]Transações em processo[/] ───────────────────────────────────────");
         AnsiConsole.Write(table);
 
         new DoProcessTransactions().Run(new ListUseCaseParameter<Transaction>[] { new(){ ParameterName = "Transactions", ParameterValue = transactions } });
 
-        Console.WriteLine("Processamento de transações concluído!\n");
+        AnsiConsole.Write(new Markup("[bold green]Processamento de transações concluído![/]"));
       }
 
-      Console.WriteLine("Pressione ENTER para voltar");
+      Console.WriteLine("\n");
+      AnsiConsole.MarkupLine("Pressione [darkorange]ENTER[/] para voltar");
 
       ConsoleKeyInfo info = Console.ReadKey(true);
       while (info.Key != ConsoleKey.Enter) { info = Console.ReadKey(true); }
