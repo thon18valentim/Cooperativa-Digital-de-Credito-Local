@@ -103,4 +103,16 @@ Basta copiar eles e colar na pasta "Pending" dentro da pasta "Transactions". Cas
 ainda não tenha a pasta "Transactions", basta rodar a aplicação uma vez que as pastas
 serão criadas no seu desktop (área de trabalho).
 
-{{ Descrever aqui o que deve ocorrer com as transações }}
+Atenção ao utilizar os arquivos disponibilizados para teste, certifique-se que as contas
+descritas nos documentos existam em sua base de dados. As contas de número "123456" se referem
+a contas de outros bancos e estão acompanhadas do código do banco "123" e agência "0002", então,
+você não deve alterá-las. As demais, verifique se elas existem no banco de dados, pois se referem
+a contas de clientes do sistema.
+
+Caso as operações sejam processadas com sucesso quatro arquivos de sucesso serão criados (Transactions/Completed)
+e 3 de falha serão criadas (Transactions/Failed).
+
+Mantendo o padrão dos arquivos de testes disponibilizados os clientes envolvidos terminirão com o seguinte
+saldo:
+- 1° R$ 1.975,00
+- 2° R$ 955,50
