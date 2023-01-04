@@ -50,7 +50,6 @@ namespace AdaCredit.Views
 
         AnsiConsole.Write(table);
 
-        //var tuple = new ListUseCaseParameter<Transaction>[] { ("Transactions", transactions) };
         new DoProcessTransactions().Run(new ListUseCaseParameter<Transaction>[] { new(){ ParameterName = "Transactions", ParameterValue = transactions } });
 
         Console.WriteLine("Processamento de transações concluído!\n");
