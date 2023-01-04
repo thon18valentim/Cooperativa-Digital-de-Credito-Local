@@ -88,7 +88,7 @@ saldo zerado).
 - Transações de Débito recebidas até 30/11/2022 são isentas
 - Transações de Débito recebidas a partir de 01/12/2022 seguem as seguintes regras:
     - TED - Tarifa Única de R$5,00
-    - DOC - Tarifa de R$1,00 + (1% da Transação limitado a R$5,00)
+    - DOC - Tarifa de R$1,00 + (1% da Transação limitado a R$5,00), logo o máximo é de R$ 6,00
     - TEF - Isenta
 
 ## Crédito vs Débito
