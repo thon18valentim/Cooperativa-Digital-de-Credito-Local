@@ -44,7 +44,7 @@ namespace AdaCredit.Views
     {
       Console.Clear();
 
-      var table = new Table();
+      var table = new Table().Centered();
 
       table.AddColumn("Clientes");
       table.AddColumn("Contas");
@@ -65,13 +65,15 @@ namespace AdaCredit.Views
           if (account == null)
             account = new Account();
 
-          table.AddRow(c.Name, account.Number, string.Format("{0:C}", account.Balance));
+          table.AddRow($"[bold white]{c.Name}[/]", account.Number, $"[bold green]{string.Format("{0:C}", account.Balance)}[/]");
         }
 
+        // 50
+        AnsiConsole.MarkupLine("────────────────────────────────────────────────── [darkorange]Clientes Ativos[/] ──────────────────────────────────────────────────");
         AnsiConsole.Write(table);
       }
 
-      Console.WriteLine("Pressione ENTER para voltar");
+      AnsiConsole.MarkupLine("Pressione [darkorange]ENTER[/] para voltar");
 
       ConsoleKeyInfo info = Console.ReadKey(true);
       while (info.Key != ConsoleKey.Enter) { info = Console.ReadKey(true); }

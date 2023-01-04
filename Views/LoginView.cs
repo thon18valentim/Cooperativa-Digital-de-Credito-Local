@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AdaCredit.Infra.Repositories;
 using AdaCredit.Utils;
 using AdaCredit.Domain.UseCases;
+using Spectre.Console;
 
 namespace AdaCredit.Views
 {
@@ -19,11 +20,9 @@ namespace AdaCredit.Views
       {
         Console.Clear();
 
-        Console.WriteLine("Login: ");
-        var userName = Console.ReadLine();
-
-        Console.WriteLine("Senha: ");
-        var password = Util.ReadLinePassword();
+        AnsiConsole.MarkupLine("── [darkorange]Login[/] ──────────────────────────────────────────────────────────────────────");
+        var userName = AnsiConsole.Ask<string>("Entre com o seu [darkorange]login[/]:");
+        var password = AnsiConsole.Prompt(new TextPrompt<string>("Entre com a sua [darkorange]senha[/]:").PromptStyle("red").Secret());
 
         if (EmployeeRepository.IsEmpty())
         {
@@ -36,7 +35,6 @@ namespace AdaCredit.Views
         }
         else
         {
-          //var tuple = new StringUseCaseParameter[] { ("UserName", userName), ("Password", password) };
           isLogged = new DoLogin().Run(
             new StringUseCaseParameter[] { 
               new(){ ParameterName = "UserName", ParameterValue = userName },
@@ -46,14 +44,43 @@ namespace AdaCredit.Views
         
         if (!isLogged)
         {
-          Console.WriteLine("Usuário ou senha incorreta!");
+          Console.WriteLine("\n");
+          AnsiConsole.Write(new Markup("[bold red]Usuário ou senha incorreta![/]"));
           Thread.Sleep(2000);
         }
 
       } while (!isLogged);
 
-      Console.WriteLine("Login efetuado com sucesso!");
-      Thread.Sleep(2000);
+      AnsiConsole.Status()
+        .Start("[bold blue]Login efetuado com sucesso[/]", ctx =>
+        {
+          Console.WriteLine("\n");
+          Thread.Sleep(2000);
+          AnsiConsole.MarkupLine("[bold blue]LOG:[/] Carregando transações...");
+          Thread.Sleep(2000);
+
+          ctx.Status("[bold blue]Preparando ambiente dos funcionários[/]");
+          ctx.Spinner(Spinner.Known.Balloon);
+          ctx.SpinnerStyle(Style.Parse("blue"));
+
+          AnsiConsole.MarkupLine("[bold blue]LOG:[/] Carregando clientes...");
+          Thread.Sleep(2000);
+
+          ctx.Status("[bold blue]Preparando ambiente de gerenciamento[/]");
+          ctx.Spinner(Spinner.Known.Balloon);
+          ctx.SpinnerStyle(Style.Parse("blue"));
+
+          AnsiConsole.MarkupLine("[bold blue]LOG:[/] Carregando contas...");
+          Thread.Sleep(2000);
+
+          ctx.Status("[bold blue]Finalizando preparativos[/]");
+          ctx.Spinner(Spinner.Known.Balloon);
+          ctx.SpinnerStyle(Style.Parse("blue"));
+        });
+
+      Console.WriteLine("\n");
+      AnsiConsole.Write(new Markup("[bold green]Seja bem vindo ao sistema Ada Credit![/]"));
+      Thread.Sleep(4000);
     }
   }
 }
