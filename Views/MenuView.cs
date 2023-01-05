@@ -72,11 +72,27 @@ namespace AdaCredit.Views
          config.WriteHeaderAction = () => Console.WriteLine("Escolha uma opção:");
        });
 
+      var subHelp = new ConsoleMenu(Array.Empty<string>(), level: 1)
+       .Add("Sistema", () => HelpView.ShowSystem())
+       .Add("Transações", () => HelpView.ShowTransactions())
+       .Add("Voltar", ConsoleMenu.Close)
+       .Configure(config =>
+       {
+         config.Selector = "> ";
+         config.EnableFilter = false;
+         config.Title = "Ada Credit / Relatórios";
+         config.EnableBreadcrumb = true;
+         config.WriteBreadcrumbAction = titles => Console.WriteLine(string.Join(" / ", titles));
+         config.SelectedItemBackgroundColor = Color.Orange3;
+         config.WriteHeaderAction = () => Console.WriteLine("Escolha uma opção:");
+       });
+
       var menu = new ConsoleMenu(Array.Empty<string>(), level: 2)
         .Add("Clientes", () => subClient.Show())
         .Add("Funcionários", () => subEmployee.Show())
         .Add("Transações", () => subTransactions.Show())
         .Add("Relatórios", () => subReports.Show())
+        .Add("Ajuda", () => subHelp.Show())
         .Add("Exit", () => Quit())
         .Configure(config =>
         {
