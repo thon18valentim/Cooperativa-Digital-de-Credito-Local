@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AdaCredit.Infra.Repositories;
+﻿using AdaCredit.Infra.Repositories;
 using AdaCredit.Domain.Entities;
 using AdaCredit.Domain.Entities.Enums;
 using Bogus;
@@ -22,7 +17,6 @@ namespace AdaCredit.Domain.UseCases
       bool IsUniqueName = false;
       do
       {
-        // criar novo employee
         employee = new Faker<Employee>()
           .CustomInstantiator(f => new Employee())
           .RuleFor(e => e.Gender, f => f.PickRandom<Gender>())
@@ -31,12 +25,10 @@ namespace AdaCredit.Domain.UseCases
           .RuleFor(e => e.PasswordSalt, f => GenerateSalt())
           .FinishWith((f, e) =>
           {
-            // hash da senha
             var hashedPassword = HashPassword(password, e.PasswordSalt);
             e.PasswordHash = hashedPassword;
           });
 
-        // conferindo se nome é unico
         if (!EmployeeRepository.RegisteredEmployees.Any(e => e.UserName == employee.UserName))
           IsUniqueName = true;
 
@@ -45,12 +37,10 @@ namespace AdaCredit.Domain.UseCases
       employee.IsActive = true;
       employee.LastLogin = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
 
-      // adicionar employee
       EmployeeRepository.Add(employee);
 
       Console.WriteLine($"Funcionário {employee.UserName} criado com sucesso!");
 
-      // atualizar base de dados
       return EmployeeRepository.Save();
     }
   }

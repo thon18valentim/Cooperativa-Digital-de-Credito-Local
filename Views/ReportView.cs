@@ -1,9 +1,4 @@
 ﻿using Spectre.Console;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AdaCredit.Domain.Entities;
 using AdaCredit.Infra.Repositories;
 using AdaCredit.Utils;

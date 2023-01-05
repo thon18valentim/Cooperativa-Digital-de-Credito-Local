@@ -1,11 +1,5 @@
 ﻿using Spectre.Console;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AdaCredit.Domain.Entities;
-using AdaCredit.Domain.Entities.Enums;
 using AdaCredit.Infra.Repositories;
 using AdaCredit.Domain.UseCases;
 
@@ -19,9 +13,9 @@ namespace AdaCredit.Views
 
       var table = new Table();
 
-      table.AddColumn("Banco de Origem & Conta"); // codigo (agencia) + conta
-      table.AddColumn("Banco de Destino & Conta"); // codigo (agencia) + conta
-      table.AddColumn("[grey58]Tipo (Sentido)[/]"); // DOC, TED, TEF (0 - Débito/Saída, 1 - Crédito/Entrada)
+      table.AddColumn("Banco de Origem & Conta");
+      table.AddColumn("Banco de Destino & Conta");
+      table.AddColumn("[grey58]Tipo (Sentido)[/]");
       table.AddColumn("[green]Valor[/]");
 
       List<Transaction> transactions = TransactionsRepository.LoadPending();

@@ -1,9 +1,6 @@
 ﻿using CsvHelper;
 using System.Globalization;
-using AdaCredit.Domain.Entities;
 using AdaCredit.Domain.Entities.Maps;
-using System.Collections;
-using CsvHelper.Configuration;
 using Spectre.Console;
 using AdaCredit.Domain.UseCases;
 

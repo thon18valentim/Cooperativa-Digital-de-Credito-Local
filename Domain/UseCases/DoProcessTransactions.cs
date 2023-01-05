@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AdaCredit.Domain.Entities;
+﻿using AdaCredit.Domain.Entities;
 using AdaCredit.Domain.Entities.Enums;
 using AdaCredit.Infra.Repositories;
 using AdaCredit.Utils;
@@ -12,8 +7,8 @@ namespace AdaCredit.Domain.UseCases
 {
   public sealed class DoProcessTransactions : IUseCase
   {
-    private List<Transaction> completedTransactions = new();
-    private List<Transaction> failedTransactions = new();
+    private readonly List<Transaction> completedTransactions = new();
+    private readonly List<Transaction> failedTransactions = new();
 
     public bool Run(IEnumerable<IUseCaseParameter> parameter)
     {
@@ -24,7 +19,7 @@ namespace AdaCredit.Domain.UseCases
         var sameBank = true;
         var fromHome = false;
 
-        // verificando se contas são iguais
+        // verifying if the accounts are the same
         if (string.Equals(transaction.OriginBankCode, transaction.DestinationBankCode))
         {
           if (string.Equals(transaction.OriginBankAccount, transaction.DestinationBankAccount))
@@ -36,7 +31,7 @@ namespace AdaCredit.Domain.UseCases
           }
         }
 
-        // verificando se contas são do mesmo banco
+        // verifying if the accounts are from the same bank
         if (!string.Equals(transaction.OriginBankCode, transaction.DestinationBankCode))
         {
           sameBank = false;
@@ -49,7 +44,7 @@ namespace AdaCredit.Domain.UseCases
           }
         }
 
-        // verificando existencia da conta e se estão ativas
+        // verifying if the accounts exists and active
         if (string.Equals(transaction.OriginBankCode, "777"))
         {
           if (!AccountAvailable(transaction.OriginBankAccount))
@@ -72,7 +67,7 @@ namespace AdaCredit.Domain.UseCases
           }
         }
 
-        // aplicando transação
+        // applying transaction rate & value
         if (!ApplyTransaction(transaction, fromHome, sameBank))
         {
           transaction.ErrorMessage = "Saldo insuficiente";
@@ -112,11 +107,9 @@ namespace AdaCredit.Domain.UseCases
     {
       DateTime date = new(2022, 11, 30);
 
-      // credito é isento
       if (transaction.Entry == 1)
         return 0.00M;
 
-      // até 30/11/2022 debito nao tem tarifa
       if (transaction.Entry == 0 & DateTime.Compare(transaction.Date, date) < 0)
         return 0.00M;
 
@@ -140,7 +133,7 @@ namespace AdaCredit.Domain.UseCases
 
         var rate = GenerateRate(transaction);
 
-        if (transaction.Entry == 0) // Debit
+        if (transaction.Entry == 0)
         {
           if (!HasEnoughCash(transaction.OriginBankAccount, transaction.Value))
             return false;
@@ -148,7 +141,7 @@ namespace AdaCredit.Domain.UseCases
           originAccount.Balance -= transaction.Value + rate;
           destinationAccount.Balance += transaction.Value;
         }
-        else // Credit
+        else
         {
           if (!HasEnoughCash(transaction.DestinationBankAccount, transaction.Value))
             return false;
@@ -168,14 +161,14 @@ namespace AdaCredit.Domain.UseCases
         {
           originAccount = AccountRepository.Find(transaction.OriginBankAccount);
 
-          if (transaction.Entry == 0) // Debit
+          if (transaction.Entry == 0)
           {
             if (!HasEnoughCash(transaction.OriginBankAccount, transaction.Value))
               return false;
 
             originAccount.Balance -= transaction.Value + rate;
           }
-          else // Credit
+          else
           {
             originAccount.Balance += transaction.Value;
           }
@@ -184,11 +177,11 @@ namespace AdaCredit.Domain.UseCases
         {
           destinationAccount = AccountRepository.Find(transaction.DestinationBankAccount);
 
-          if (transaction.Entry == 0) // Debit
+          if (transaction.Entry == 0)
           {
             destinationAccount.Balance += transaction.Value;
           }
-          else // Credit
+          else
           {
             if (!HasEnoughCash(transaction.DestinationBankAccount, transaction.Value))
               return false;

@@ -1,7 +1,5 @@
 ﻿
 using AdaCredit.Views;
-using AdaCredit.Domain.Entities;
-using AdaCredit.Utils;
 using AdaCredit.Infra.Repositories;
 
 namespace AdaCredit

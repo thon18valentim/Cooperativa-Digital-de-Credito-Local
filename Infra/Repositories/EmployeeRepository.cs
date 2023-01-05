@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 using AdaCredit.Domain.Entities;
 using AdaCredit.Domain.Entities.Maps;
-using Bogus;
 using CsvHelper;
-using AdaCredit.Domain.Entities.Enums;
-using BCrypt.Net;
-using static BCrypt.Net.BCrypt;
-using System.Collections;
 using CsvHelper.Configuration;
 using System.Reflection;
 

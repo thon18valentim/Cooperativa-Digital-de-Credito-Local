@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 using AdaCredit.Domain.Entities;
 using AdaCredit.Domain.Entities.Maps;
 using CsvHelper;

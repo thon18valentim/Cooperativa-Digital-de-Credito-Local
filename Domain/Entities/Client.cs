@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AdaCredit.Domain.Entities.Enums;
+﻿using AdaCredit.Domain.Entities.Enums;
 
 namespace AdaCredit.Domain.Entities
 {

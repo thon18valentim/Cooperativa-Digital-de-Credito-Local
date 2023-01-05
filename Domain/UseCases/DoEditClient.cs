@@ -1,11 +1,5 @@
 ﻿using AdaCredit.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AdaCredit.Infra.Repositories;
-using AdaCredit.Domain.Entities;
 using Spectre.Console;
 
 namespace AdaCredit.Domain.UseCases

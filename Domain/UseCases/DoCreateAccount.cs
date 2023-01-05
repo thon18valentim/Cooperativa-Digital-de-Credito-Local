@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AdaCredit.Domain.Entities;
-using AdaCredit.Utils;
+﻿using AdaCredit.Domain.Entities;
 using Bogus;
 using AdaCredit.Infra.Repositories;
 
@@ -33,7 +27,6 @@ namespace AdaCredit.Domain.UseCases
 
           });
 
-        // conferindo se conta é unica
         if (!AccountRepository.RegisteredAccounts.Any(e => e.Number == account.Number))
           IsUniqueAccount = true;
 

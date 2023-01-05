@@ -1,5 +1,4 @@
-﻿
-using ConsoleTools;
+﻿using ConsoleTools;
 using Spectre.Console;
 
 namespace AdaCredit.Views
