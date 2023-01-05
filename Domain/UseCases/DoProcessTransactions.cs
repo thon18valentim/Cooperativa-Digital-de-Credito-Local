@@ -85,7 +85,7 @@ namespace AdaCredit.Domain.UseCases
       return true;
     }
 
-    private decimal CalculateTEDRate(decimal transactionValue)
+    private decimal CalculateDOCRate(decimal transactionValue)
     {
       var v = transactionValue * (1M / 100M);
 
@@ -103,7 +103,7 @@ namespace AdaCredit.Domain.UseCases
     private bool HasEnoughCash(string accountNumber, decimal value)
       => AccountRepository.Find(accountNumber)?.Balance >= value;
 
-    private decimal GenerateRate(Transaction transaction)
+    private decimal CalculateRate(Transaction transaction)
     {
       DateTime date = new(2022, 11, 30);
 
@@ -116,7 +116,7 @@ namespace AdaCredit.Domain.UseCases
       return transaction.Type switch
       {
         TransactionType.TED => 5.00M,
-        TransactionType.DOC => CalculateTEDRate(transaction.Value),
+        TransactionType.DOC => CalculateDOCRate(transaction.Value),
         _ => 0.00M
       };
     }
@@ -131,7 +131,7 @@ namespace AdaCredit.Domain.UseCases
         originAccount = AccountRepository.Find(transaction.OriginBankAccount);
         destinationAccount = AccountRepository.Find(transaction.DestinationBankAccount);
 
-        var rate = GenerateRate(transaction);
+        var rate = CalculateRate(transaction);
 
         if (transaction.Entry == 0)
         {
@@ -155,7 +155,7 @@ namespace AdaCredit.Domain.UseCases
         if (transaction.Type == TransactionType.TEF)
           return false;
 
-        var rate = GenerateRate(transaction);
+        var rate = CalculateRate(transaction);
 
         if (fromHome)
         {
