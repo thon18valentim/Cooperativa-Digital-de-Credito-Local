@@ -120,3 +120,5 @@ saldo:
 Observação: Para facilitar os testes, na pasta "Testes" estará presente os arquivos funcionários, clientes e contas.
 Prontos para uso e devidamente relacionados com as transações também presentes na pasta. Caso opte por utiliza-los, mova
 os arquivos para a pasta raiz do projeto, junto ao .exe.
+
+A senha dos funcionários presentes nesse database de testes é: 12345
