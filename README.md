@@ -116,3 +116,7 @@ Mantendo o padrão dos arquivos de testes disponibilizados os clientes envolvido
 saldo:
 - 1° R$ 1.975,00
 - 2° R$ 955,50
+
+Observação: Para facilitar os testes, na pasta "Testes" estará presente os arquivos funcionários, clientes e contas.
+Prontos para uso e devidamente relacionados com as transações também presentes na pasta. Caso opte por utiliza-los, mova
+os arquivos para a pasta raiz do projeto, junto ao .exe.
